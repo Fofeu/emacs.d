@@ -65,7 +65,7 @@
 
 ;; Ocaml support (?)
 ;; Tuareg
-(load "/home/ffort/.opam/4.06.1/share/emacs/site-lisp/tuareg-site-file")
+(load "~/.opam/4.06.1/share/emacs/site-lisp/tuareg-site-file")
 ;; Merlin
 ;;(let ((opam-share (ignore-errors (car (process-lines "opam" "config" "var" "share")))))
 ;;      (when (and opam-share (file-directory-p opam-share))
