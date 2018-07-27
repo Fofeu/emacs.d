@@ -1,11 +1,29 @@
-;; Setup lib variables
-(setq opam-share (substring (shell-command-to-string "opam config var share 2> /dev/null") 0 -1))
-(add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/emacs-goodies-el")
+;; Configure MELPA
+(require 'package)
+(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+		    (not (gnutls-available-p))))
+       (proto (if no-ssl "http" "https")))
+  ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
+  (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+  ;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
+  (when (< emacs-major-version 24)
+    ;; For important compatibility libraries like cl-lib
+    (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
+(package-initialize)
 
-;; Load libs
-(require 'ocp-indent)
-(require 'merlin)
+;; Load Ocaml libs, if available
+(setq opam-cmd-share (shell-command-to-string "opam config var share 2> /dev/null"))
+(message "a: %s" opam-cmd-share)
+
+(unless (string= "" opam-cmd-share)
+  (setq opam-share (substring (shell-command-to-string "opam config var share 2> /dev/null") 0 -1))
+  (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
+  (add-to-list 'load-path "/usr/share/emacs/site-lisp/emacs-goodies-el")
+  (require 'ocp-indent)
+  (require 'merlin)
+  (load "~/.opam/4.06.1/share/emacs/site-lisp/tuareg-site-file"))
+
+;; Load other libs
 (require 'browse-kill-ring)
 
 ;; Do not implicitly add newlines
@@ -63,21 +81,6 @@
 (global-set-key (kbd "C-c k") 'kill-if-unmodified)
 (global-set-key (kbd "C-c y") 'browse-kill-ring)
 
-;; Ocaml support (?)
-;; Tuareg
-(load "~/.opam/4.06.1/share/emacs/site-lisp/tuareg-site-file")
-;; Merlin
-;;(let ((opam-share (ignore-errors (car (process-lines "opam" "config" "var" "share")))))
-;;      (when (and opam-share (file-directory-p opam-share))
-;;       ;; Register Merlin
-;;       (add-to-list 'load-path (expand-file-name "emacs/site-lisp" opam-share))
-;;       (autoload 'merlin-mode "merlin" nil t nil)
-;;       ;; Automatically start it in OCaml buffers
-;;       (add-hook 'tuareg-mode-hook 'merlin-mode t)
-;;       (add-hook 'caml-mode-hook 'merlin-mode t)
-;;       ;; Use opam switch to lookup ocamlmerlin binary
-;;       (setq merlin-command 'opam)))
-
 ;;compile file of optimization (?)
 ;;(defun byte-compile-if-newer-and-load (file)
 ;;   "Byte compile file.el if newer than file.elc"
@@ -86,7 +89,3 @@
 ;;    (byte-compile-file (concat file ".el")))
 ;;    (load file))
 ;;(byte-compile-if-newer-and-load "~/.emacs.d/init")
-
-;;;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
-;;(require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
-;;;; ## end of OPAM user-setup addition for emacs / base ## keep this line
