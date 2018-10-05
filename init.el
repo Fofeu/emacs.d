@@ -13,6 +13,7 @@
 
 ;; Load libs
 (require 'browse-kill-ring)
+(autoload 'org-mode "org")
 
 ;; Do not implicitly add newlines
 (setq next-line-add-newlines 'nil)
