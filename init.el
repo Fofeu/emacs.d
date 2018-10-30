@@ -118,6 +118,14 @@
 	  (untabify (point-min) (point-max))))
 
 
+;; Prelude
+(setq auto-mode-alist (cons '("\\.plu$" . prelude-mode) auto-mode-alist))
+(autoload 'prelude-mode "prelude" "Edition de code prelude" t)
+
+(setq load-path
+      (append load-path
+              '("~/.emacs.d/site-lisp")))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
