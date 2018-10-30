@@ -78,7 +78,7 @@
 (if prelude-mode-map
     ()
   (setq prelude-mode-map (make-sparse-keymap))
-  (define-key prelude-mode-map ","   'electric-prelude-special-char)
+;  (define-key prelude-mode-map ","   'electric-prelude-special-char)
 ;  (define-key prelude-mode-map ":"   'electric-prelude-special-char)
   (define-key prelude-mode-map "\C-c\C-c" 'prelude-compil)
   (define-key prelude-mode-map "\C-c\C-h" 'prelude-clocks)
@@ -745,4 +745,3 @@
 (provide 'prelude)
 
 ;;; prelude.el ends here...
-
