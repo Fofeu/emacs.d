@@ -11,6 +11,12 @@
     (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
 (package-initialize)
 
+
+;; Set load path
+;; Add ~/.emacs.d/site-lisp
+(add-to-list 'load-path
+             (concat user-emacs-directory "/site-lisp"))
+
 ;; Load libs
 (require 'browse-kill-ring)
 (autoload 'org-mode "org")
@@ -128,9 +134,10 @@
 (setq auto-mode-alist (cons '("\\.plu$" . prelude-mode) auto-mode-alist))
 (autoload 'prelude-mode "prelude" "Edition de code prelude" t)
 
-(setq load-path
-      (append load-path
-              '("~/.emacs.d/site-lisp")))
+;; Org-mode
+(add-hook 'orgstruct-mode-hook
+          (lambda ()
+            (setq org-log-done :time)))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
