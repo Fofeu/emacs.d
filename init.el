@@ -61,23 +61,29 @@
   (interactive)
   (revert-buffer :ignore-auto :noconfirm))
 
-(defun kill-if-unmodified ()
+(defun kill-if-unmodified-or-query ()
   "Kill current buffer, if it is unmodified"
   (interactive)
-  (if (buffer-modified-p)
-      (message "Buffer is kept because it was modified")
-    (kill-buffer)))
+  (if (or (not (buffer-modified-p)) (y-or-n-p "Kill current buffer ?"))
+      (kill-buffer)
+    (message "Buffer %s is conserved" (buffer-name))))
 
 (defun open-config ()
   "Open the emacs configuration file"
   (interactive)
   (find-file "~/.emacs.d/init.el"))
 
+(defun open-config-other-window ()
+  "Open the emacs configuration file"
+  (interactive)
+  (find-file-other-window "~/.emacs.d/init.el"))
+
 ;; User keys
 (global-set-key (kbd "C-c r") 'reload-config)
 (global-set-key (kbd "C-c c") 'open-config)
+(global-set-key (kbd "C-c 4 c") 'open-config-other-window)
 (global-set-key (kbd "C-c l") 'revert-buffer-no-confirm)
-(global-set-key (kbd "C-c k") 'kill-if-unmodified)
+(global-set-key (kbd "C-c k") 'kill-if-unmodified-or-query)
 (global-set-key (kbd "C-c y") 'browse-kill-ring)
 
 ;;compile file of optimization (?)
