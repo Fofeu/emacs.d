@@ -13,6 +13,7 @@
 
 ;; Load libs
 (require 'browse-kill-ring)
+(autoload 'org-mode "org")
 
 ;; Do not implicitly add newlines
 (setq next-line-add-newlines 'nil)
@@ -91,14 +92,13 @@
 ;; Language settings
 
 ;; Ocaml
-(setq opam-cmd-share (shell-command-to-string "opam config var share 2> /dev/null"))
-(unless (string= "" opam-cmd-share)
-  (setq opam-share (substring (shell-command-to-string "opam config var share 2> /dev/null") 0 -1))
+(setq opam-share (substring (shell-command-to-string "opam config var share 2> /dev/null") 0 -1))
+(unless (string= "" opam-share)
   (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
   (add-to-list 'load-path "/usr/share/emacs/site-lisp/emacs-goodies-el")
   (require 'ocp-indent)
   (autoload 'merlin-mode "merlin")
-  (load "~/.opam/4.06.1/share/emacs/site-lisp/tuareg-site-file")
+  (load (concat opam-share "/emacs/site-lisp/tuareg-site-file"))
   (add-hook 'tuareg-mode-hook 'merlin-mode))
 
 ;; C/C++
@@ -117,6 +117,14 @@
 	    (setq python-indent 2)
 	  (untabify (point-min) (point-max))))
 
+
+;; Prelude
+(setq auto-mode-alist (cons '("\\.plu$" . prelude-mode) auto-mode-alist))
+(autoload 'prelude-mode "prelude" "Edition de code prelude" t)
+
+(setq load-path
+      (append load-path
+              '("~/.emacs.d/site-lisp")))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
