@@ -48,8 +48,8 @@
 (require 'font-lock)
 
 
-; version of prelude-mode
-(defconst prelude-mode-version "1.0")
+;; version of prelude-mode
+(defconst prelude-mode-version "1.1")
 
 ;;; Customisable values :
 
@@ -78,13 +78,13 @@
 (if prelude-mode-map
     ()
   (setq prelude-mode-map (make-sparse-keymap))
-;  (define-key prelude-mode-map ","   'electric-prelude-special-char)
-;  (define-key prelude-mode-map ":"   'electric-prelude-special-char)
+  ;;  (define-key prelude-mode-map ","   'electric-prelude-special-char)
+  ;;  (define-key prelude-mode-map ":"   'electric-prelude-special-char)
   (define-key prelude-mode-map "\C-c\C-c" 'prelude-compil)
   (define-key prelude-mode-map "\C-c\C-h" 'prelude-clocks)
   (define-key prelude-mode-map "\C-c\C-d" 'prelude-deadlines)
   (define-key prelude-mode-map "\r"  'electric-prelude-end-of-line)
-;;  (define-key prelude-mode-map "\t"  'electric-prelude-tab)
+  ;;  (define-key prelude-mode-map "\t"  'electric-prelude-tab)
   )
 
 
@@ -92,35 +92,41 @@
 
 (require 'compile)
 
+(defun prelude-compil-sentinel (proc str)
+  (with-current-buffer (process-buffer proc)
+    (insert (format "%s %s" proc str)))
+  (when (string-prefix-p "exited abnormally" str)
+    (switch-to-buffer (process-buffer proc))
+    (end-of-buffer))
+  (when (string-prefix-p "finished" str)
+    (message "prelude compilation finished successfully")))
+
 (defun prelude-compil ()
   "Saves the file and calls the prelude compiler. Prompt for saving if
 `compilation-ask-about-save' is non nil"
   (interactive)
   (if (buffer-modified-p)
       (if (or (not compilation-ask-about-save)
-	      (y-or-n-p "Save file? "))
-	  (save-buffer)))
+              (y-or-n-p "Save file? "))
+          (save-buffer)))
   (let ((fichier (buffer-file-name))
-	(node nil))
+        (node nil))
     (if prelude-ask-node-mode
-	(setq node (prelude-ask-node-name))
+        (setq node (prelude-ask-node-name))
       (setq node (prelude-get-current-node)))
     (if (and (not prelude-ask-node-mode) (eq node ""))
-	(message "no node to compile.")
+        (message "no node to compile.")
       (progn
-	(delete-other-windows)
-	(split-window-vertically)
-	(get-buffer-create "*compil-prelude*")
-	(select-window (next-window))
-	(switch-to-buffer "*compil-prelude*")
-	(start-process "prelude-compilation"
-		       "*compil-prelude*"
-		       prelude-compiler-name
-		       "-node"
-		       node
-                       fichier)
-	(end-of-buffer)
-	(select-window (next-window))))))
+        (get-buffer-create "*compil-prelude*")
+        (make-process
+         :name "prelude-compilation"
+         :buffer "*compil-prelude*"
+         :command
+         (list prelude-compiler-name
+               "-node"
+               node
+               fichier)
+         :sentinel 'prelude-compil-sentinel)))))
 
 
 
@@ -130,30 +136,27 @@
   (interactive)
   (if (buffer-modified-p)
       (if (or (not compilation-ask-about-save)
-	      (y-or-n-p "Save file? "))
-	  (save-buffer)))
+              (y-or-n-p "Save file? "))
+          (save-buffer)))
   (let ((fichier (buffer-file-name))
-	(node nil))
+        (node nil))
     (if prelude-ask-node-mode
-	(setq node (prelude-ask-node-name))
+        (setq node (prelude-ask-node-name))
       (setq node (prelude-get-current-node)))
     (if (and (not prelude-ask-node-mode) (eq node ""))
-	(message "no node to compile.")
+        (message "no node to compile.")
       (progn
-	(delete-other-windows)
-	(split-window-vertically)
-	(get-buffer-create "*compil-prelude*")
-	(select-window (next-window))
-	(switch-to-buffer "*compil-prelude*")
-	(start-process "prelude-compilation"
-		       "*compil-prelude*"
-		       prelude-compiler-name
-		       "-node"
-		       node
-                       "-print_clocks"
-                       fichier)
-	(end-of-buffer)
-	(select-window (next-window))))))
+        (get-buffer-create "*compil-prelude*")
+        (make-process
+         :name "prelude-compilation"
+         :buffer "*compil-prelude*"
+         :command
+         (list prelude-compiler-name
+               "-node"
+               node
+               "-print_clocks"
+               fichier)
+         :sentinel 'prelude-compil-sentinel)))))
 
 
 (defun prelude-deadlines ()
@@ -162,30 +165,32 @@
   (interactive)
   (if (buffer-modified-p)
       (if (or (not compilation-ask-about-save)
-	      (y-or-n-p "Save file? "))
-	  (save-buffer)))
+              (y-or-n-p "Save file? "))
+          (save-buffer)))
   (let ((fichier (buffer-file-name))
-	(node nil))
+        (node nil))
     (if prelude-ask-node-mode
-	(setq node (prelude-ask-node-name))
+        (setq node (prelude-ask-node-name))
       (setq node (prelude-get-current-node)))
     (if (and (not prelude-ask-node-mode) (eq node ""))
-	(message "no node to compile.")
+        (message "no node to compile.")
       (progn
-	(delete-other-windows)
-	(split-window-vertically)
-	(get-buffer-create "*compil-prelude*")
-	(select-window (next-window))
-	(switch-to-buffer "*compil-prelude*")
-	(start-process "prelude-compilation"
-		       "*compil-prelude*"
-		       prelude-compiler-name
-		       "-node"
-		       node
+        (delete-other-windows)
+        (split-window-vertically)
+        (get-buffer-create "*compil-prelude*")
+        (select-window (next-window))
+        (switch-to-buffer "*compil-prelude*")
+        (erase-buffer)
+        (start-process "prelude-compilation"
+                       "*compil-prelude*"
+                       prelude-compiler-name
+                       "-node"
+                       node
                        "-print_deadlines"
                        fichier)
-	(end-of-buffer)
-	(select-window (next-window))))))
+        (end-of-buffer)
+        (select-window (next-window))))))
+
 (defun prelude-get-current-node ()
   "Returns the current node.
    Search backward for keyword 'node' and returns the following node.
@@ -195,12 +200,12 @@
     (let ((res ""))
       (end-of-line)
       (if (re-search-backward "^\\<node\\>" 1 t)
-	  (progn
-	    (forward-char 4)
-	    (skip-chars-forward " \t\n")
-	    (while (not (looking-at "\\((\\| \\|$\\)"))
-	      (setq res (concat res (char-to-string (char-after (point)))))
-	      (forward-char 1))))
+          (progn
+            (forward-char 4)
+            (skip-chars-forward " \t\n")
+            (while (not (looking-at "\\((\\| \\|$\\)"))
+              (setq res (concat res (char-to-string (char-after (point)))))
+              (forward-char 1))))
       res)))
 
 
@@ -248,13 +253,13 @@
 
 (setq prelude-font-lock-keywords
       '(("--.*$" . font-lock-comment-face)
-	("(\\*\\(.\\|\n\\)*?\\*)" . font-lock-comment-face)
-	("node *\\([a-zA-Z0-9_-]*\\) *(" 1 prelude-font-lock-governing-face nil nil)
+        ("(\\*\\(.\\|\n\\)*?\\*)" . font-lock-comment-face)
+        ("node *\\([a-zA-Z0-9_-]*\\) *(" 1 prelude-font-lock-governing-face nil nil)
         ("\\<\\(const\\|sensor\\|imported\\|actuator\\|wcet\\|let\\|node\\|returns\\|req\\|tel\\|type\\|due\\|before\\|rate\\|var\\)\\>" 1 font-lock-keyword-face nil nil)
         ("\\<\\(node\\|let\\|tel\\)\\>[ \t\n]" 1 prelude-font-lock-multistage-face nil nil)
         ("\\<\\(true\\|and\\|fby\\|merge\\|tail\\|when\\|whennot\\|false\\)\\>" . font-lock-reference-face)
         ("\\(\\(/\\|\\*\\)^\\|::\\)" . font-lock-reference-face)
-	("\\<\\(bool\\|int\\|real\\)\\(\\^[^ ;,)]+\\)?\\>" 0
+        ("\\<\\(bool\\|int\\|real\\)\\(\\^[^ ;,)]+\\)?\\>" 0
          font-lock-variable-name-face nil nil)))
 
 
@@ -265,13 +270,13 @@
   (setq font-lock-defaults
         '(prelude-font-lock-keywords t)))
 
-; font-lock isn't used if in a  console
+;; font-lock isn't used if in a console
 (if window-system
     (prog2
-	(add-hook 'prelude-mode-hook
-		  'turn-on-font-lock)
-	(add-hook 'prelude-mode-hook
-		  'prelude-font-mode)))
+        (add-hook 'prelude-mode-hook
+                  'turn-on-font-lock)
+        (add-hook 'prelude-mode-hook
+                  'prelude-font-mode)))
 
 ;;; indentation code ----------------------------------------------
 
@@ -282,14 +287,14 @@
   (let ((result 2))
     (save-excursion
       (if (re-search-backward "^\\<\\(const\\|tel\\|type\\|var\\|imported\\|sensor\\|actuator\\)\\>" 0 t)
-	  (cond
-	   ((looking-at "^\\<tel\\>") (setq result 2))
-	   ((looking-at "^\\<\\(const\\|type\\|var\\)\\>[ \t]*$")
-	    (setq result 2))
-	   ((looking-at
-	     "^\\<const\\>[ \t]*.+") (setq result 6))
-	   ((looking-at "^\\<type\\>[ \t]*.+") (setq result 5))
-	   ((looking-at "^\\<var\\>[ \t]*.+") (setq result 4)))))
+          (cond
+           ((looking-at "^\\<tel\\>") (setq result 2))
+           ((looking-at "^\\<\\(const\\|type\\|var\\)\\>[ \t]*$")
+            (setq result 2))
+           ((looking-at
+             "^\\<const\\>[ \t]*.+") (setq result 6))
+           ((looking-at "^\\<type\\>[ \t]*.+") (setq result 5))
+           ((looking-at "^\\<var\\>[ \t]*.+") (setq result 4)))))
     result))
 
 
@@ -348,7 +353,7 @@
   (interactive)
   (beginning-of-line)
   (while (not (or (looking-at "$")
-		  (looking-at "--")))
+                  (looking-at "--")))
     (forward-char 1)))
 
 (defun prelude-line-is-comment (&optional arg)
@@ -364,18 +369,18 @@
   (interactive)
   (save-excursion
     (let ((res nil)
-	  (continue t))
+          (continue t))
       (while continue
-	(if (= (point) 1)
-	    (setq continue nil))
-	(re-search-backward
-	 "\\<\\(const\\|let\\|node\\|imported node\\|actuator\\|sensor\\|var\\|type\\|function\\)\\>" 1 t)
-	(if (not (prelude-line-is-comment))
-	    (setq continue nil)))
+        (if (= (point) 1)
+            (setq continue nil))
+        (re-search-backward
+         "\\<\\(const\\|let\\|node\\|imported node\\|actuator\\|sensor\\|var\\|type\\|function\\)\\>" 1 t)
+        (if (not (prelude-line-is-comment))
+            (setq continue nil)))
       (if (looking-at "\\<\\(const\\|type\\|var\\)\\>")
-	  (setq res t))
+          (setq res t))
       (if (looking-at "\\<\\(let\\|node\\|function\\)\\>")
-	  (setq res nil))
+          (setq res nil))
       res)))
 
 
@@ -414,7 +419,7 @@
     (and
      (looking-at
 
-"\\<\\(const\\|imported node\\|sensor\\|actuator\\|let\\|node\\|returns\\|req\\|tel\\|type\\|var\\)\\>")
+      "\\<\\(const\\|imported node\\|sensor\\|actuator\\|let\\|node\\|returns\\|req\\|tel\\|type\\|var\\)\\>")
      (not (prelude-in-comment)))))
 
 
@@ -429,11 +434,11 @@
     (save-excursion
       (beginning-of-line)
       (if (= (point) 1)
-	  (setq continue nil))
+          (setq continue nil))
       (while continue
         (forward-line -1)
         (setq beg (point))
-	(end-of-line)
+        (end-of-line)
         (while (and (not (looking-at "^")) continue)
           (if (and (looking-at ")") (not (prelude-in-comment)))
               (setq count-parent (- count-parent 1))
@@ -441,17 +446,17 @@
                 (progn
                   (setq count-parent (+ count-parent 1))
                   (if (= count-parent 1)
-		      (progn
-			(setq result (- (point) beg))
-			(setq continue nil))))))
-	  (forward-char -1))
-	(skip-chars-forward " \t")
-	(if (and (looking-at "\\<const\\|var\\|type\\|node\\|function\\>")
-		 (not (prelude-in-comment)))
-	    (setq continue nil))
-	(beginning-of-line)
-	(if (= (point) 1)
-	    (setq continue nil))))
+                      (progn
+                        (setq result (- (point) beg))
+                        (setq continue nil))))))
+          (forward-char -1))
+        (skip-chars-forward " \t")
+        (if (and (looking-at "\\<const\\|var\\|type\\|node\\|function\\>")
+                 (not (prelude-in-comment)))
+            (setq continue nil))
+        (beginning-of-line)
+        (if (= (point) 1)
+            (setq continue nil))))
     result))
 
 
@@ -476,29 +481,29 @@
   "Returns indentation of current line."
   (interactive)
   (cond
-   ; if line is comment
+   ;; if line is comment
    ((prelude-line-is-comment) prelude-comment-ind-level)
-   ; if line begins with node,include...
+   ;; if line begins with node,include...
    ((prelude-find-noindent-reg) 0)
-   ; if line begins with 'then' or 'else'
+   ;; if line begins with 'then' or 'else'
    ((prelude-find-then-else-beg) (prelude-indent-then-else-beg))
-   ; if previous line ends with 'then' or 'else'
+   ;; if previous line ends with 'then' or 'else'
    ((prelude-find-then-else-end) (+ (prelude-indent-then-else-end) 2))
-   ; looks for an unmatched parenthese
+   ;; looks for an unmatched parenthese
    ((prelude-find-unmatching-parent) (+ (prelude-find-unmatching-parent) 1))
-   ; if line is a declaration
+   ;; if line is a declaration
    ((prelude-line-is-decl) (prelude-indent-decl))
-   ; if previous line ends with '->'
+   ;; if previous line ends with '->'
    ((prelude-find-arrow) (prelude-indent-arrow-equal-bool))
-   ; if previous line ends with '='
+   ;; if previous line ends with '='
    ((prelude-find-equal-end) (prelude-indent-arrow-equal-bool))
-   ; if previous line ends with a boolean operator
+   ;; if previous line ends with a boolean operator
    ((prelude-find-bool-expr-end) (prelude-indent-arrow-equal-bool))
-   ; if line is a 'normal line'
+   ;; if line is a 'normal line'
    ((prelude-indent-normal) 2)
-   ; line is empty
+   ;; line is empty
    ((prelude-empty-line) 2)
-   ; else ...
+   ;; else ...
    (t 0)))
 
 
@@ -514,9 +519,7 @@
 
 
 (defun prelude-indent-arrow-equal-bool ()
-  "Find the level of indentation when previous line ends with '->',
-'='
-   or a boolean (or, xor, and)."
+  "Find the level of indentation when previous line ends with '->', '=' or a boolean (or, xor, and)."
   (interactive)
   (save-excursion
     (prelude-skip-commentary-lines)
@@ -533,12 +536,12 @@
       (skip-chars-backward " \t")
       (forward-char -2)
       (setq result (and (looking-at "\\<or\\>")
-			(not (prelude-in-comment))))
+                        (not (prelude-in-comment))))
       (forward-char -1)
       (or (and (looking-at "\\<\\(and\\|not\\|xor\\)\\>")
-	       (not (prelude-in-comment)))
+               (not (prelude-in-comment)))
 
-	  result))))
+          result))))
 
 
 (defun prelude-find-then-else-beg ()
@@ -548,7 +551,7 @@
     (beginning-of-line)
     (skip-chars-forward " \t")
     (and (looking-at "\\<\\(else\\|then\\)\\>")
-	 (not (prelude-in-comment)))))
+         (not (prelude-in-comment)))))
 
 
 (defun prelude-find-then-else-end ()
@@ -560,7 +563,7 @@
     (skip-chars-backward " \t")
     (forward-char -4)
     (and (looking-at "\\<\\(else\\|then\\)\\>")
-	 (not (prelude-in-comment)))))
+         (not (prelude-in-comment)))))
 
 
 
@@ -573,7 +576,7 @@
     (skip-chars-backward " \t")
     (forward-char -1)
     (and (looking-at "=")
-	 (not (prelude-in-comment)))))
+         (not (prelude-in-comment)))))
 
 
 
@@ -591,49 +594,49 @@
       (if (and (looking-at "\\<then\\>") (not (prelude-in-comment)))
           (while continue
             (prelude-skip-commentary-lines)
-	    (setq beg (point))
-	    (prelude-skip-comments)
+            (setq beg (point))
+            (prelude-skip-comments)
             (skip-chars-forward " \t")
-	    (if (and (looking-at "\\<node\\|function\\>")
-		     (not (prelude-in-comment)))
-		(setq continue nil))
-	    (end-of-line)
+            (if (and (looking-at "\\<node\\|function\\>")
+                     (not (prelude-in-comment)))
+                (setq continue nil))
+            (end-of-line)
             (while (and (not (looking-at "^")) continue)
               (if (and (looking-at "\\<then\\>")
-		       (not (prelude-in-comment)))
+                       (not (prelude-in-comment)))
                   (setq count-expr (- count-expr 1))
                 (if (and (looking-at "\\<\\(if\\|with\\)\\>")
-			 (not (prelude-in-comment)))
-		    (progn
+                         (not (prelude-in-comment)))
+                    (progn
                       (setq count-expr (+ count-expr 1))
                       (if (and (= count-expr 1) continue)
                           (progn
                             (setq continue nil)
                             (setq result (- (point) beg)))))))
               (forward-char -1)))
-	(if (looking-at "\\<else\\>")
+        (if (looking-at "\\<else\\>")
             (while continue
-	      (prelude-skip-commentary-lines)
-	      (setq beg (point))
-	      (prelude-skip-comments)
-	      (skip-chars-forward " \t")
-	      (if (and (looking-at "\\<node\\|function\\>")
-		       (not (prelude-in-comment)))
-		  (setq continue nil))
-	      (end-of-line)
-	      (while (and (not (looking-at "^")) continue)
-		(if (and (looking-at "\\<else\\>")
-			 (not (prelude-in-comment)))
-		    (setq count-expr (- count-expr 1))
-		  (if (and (looking-at "\\<\\(if\\|with\\)\\>")
-			   (not (prelude-in-comment)))
-		      (progn
-			(setq count-expr (+ count-expr 1))
-			(if (and (= count-expr 1) continue)
-			    (progn
-			      (setq continue nil)
-			      (setq result (- (point) beg)))))))
-		(forward-char -1))))))
+              (prelude-skip-commentary-lines)
+              (setq beg (point))
+              (prelude-skip-comments)
+              (skip-chars-forward " \t")
+              (if (and (looking-at "\\<node\\|function\\>")
+                       (not (prelude-in-comment)))
+                  (setq continue nil))
+              (end-of-line)
+              (while (and (not (looking-at "^")) continue)
+                (if (and (looking-at "\\<else\\>")
+                         (not (prelude-in-comment)))
+                    (setq count-expr (- count-expr 1))
+                  (if (and (looking-at "\\<\\(if\\|with\\)\\>")
+                           (not (prelude-in-comment)))
+                      (progn
+                        (setq count-expr (+ count-expr 1))
+                        (if (and (= count-expr 1) continue)
+                            (progn
+                              (setq continue nil)
+                              (setq result (- (point) beg)))))))
+                (forward-char -1))))))
     result))
 
 
@@ -657,17 +660,17 @@
               (forward-line -1)
               (setq beg (point))
               (skip-chars-forward " \t")
-	      (if (and (looking-at "\\<node\\|function\\>")
-		       (not (prelude-in-comment)))
-		  (setq continue nil))
-	      (end-of-line)
+              (if (and (looking-at "\\<node\\|function\\>")
+                       (not (prelude-in-comment)))
+                  (setq continue nil))
+              (end-of-line)
               (while (and (not (looking-at "^")) continue)
                 (if (and (looking-at "\\<then\\>")
-			 (not (prelude-in-comment)))
-		    (setq count-expr (- count-expr 1))
+                         (not (prelude-in-comment)))
+                    (setq count-expr (- count-expr 1))
                   (if (and (looking-at "\\<\\(if\\|with\\)\\>")
-			   (not (prelude-in-comment)))
-		      (progn
+                           (not (prelude-in-comment)))
+                      (progn
                         (setq count-expr (+ count-expr 1))
                         (if (and (= count-expr 1) continue)
                             (progn
@@ -678,26 +681,26 @@
             (progn
               (forward-line 1)
               (while continue
-		(forward-line -1)
-		(setq beg (point))
-		(skip-chars-forward " \t")
-		(if (and (looking-at "\\<node\\|function\\>")
-			 (not (prelude-in-comment)))
-		    (setq continue nil))
-		(end-of-line)
-		(while (and (not (looking-at "^")) continue)
-		  (if (and (looking-at "\\<else\\>")
-			   (not (prelude-in-comment)))
-		      (setq count-expr (- count-expr 1))
-		    (if (and (looking-at "\\<\\(if\\|with\\)\\>")
-			     (not (prelude-in-comment)))
-			(progn
-			  (setq count-expr (+ count-expr 1))
-			  (if (and (= count-expr 1) continue)
-			      (progn
-				(setq continue nil)
-				(setq result (- (point) beg)))))))
-		  (forward-char -1)))))))
+                (forward-line -1)
+                (setq beg (point))
+                (skip-chars-forward " \t")
+                (if (and (looking-at "\\<node\\|function\\>")
+                         (not (prelude-in-comment)))
+                    (setq continue nil))
+                (end-of-line)
+                (while (and (not (looking-at "^")) continue)
+                  (if (and (looking-at "\\<else\\>")
+                           (not (prelude-in-comment)))
+                      (setq count-expr (- count-expr 1))
+                    (if (and (looking-at "\\<\\(if\\|with\\)\\>")
+                             (not (prelude-in-comment)))
+                        (progn
+                          (setq count-expr (+ count-expr 1))
+                          (if (and (= count-expr 1) continue)
+                              (progn
+                                (setq continue nil)
+                                (setq result (- (point) beg)))))))
+                  (forward-char -1)))))))
     result))
 
 ;;; Major-mode
@@ -719,7 +722,7 @@
          How many spaces to indent a comment. (default: 2)
 
      - prelude-compiler-name:
-         Name of the prelude compiler to call. (default: 'luciole')
+         Name of the prelude compiler to call. (default: 'preludec')
 
      - prelude-ask-node-mode:
          Way to choose the node to compile:
