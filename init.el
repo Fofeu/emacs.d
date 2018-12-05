@@ -17,12 +17,20 @@
 (add-to-list 'load-path
              (concat user-emacs-directory "/site-lisp"))
 
+;; Launch edit-server in daemon mode
+(when (and (daemonp) (locate-library "edit-server"))
+  (setq edit-server-new-frame nil)
+  (edit-server-start))
+
 ;; Load libs
 (require 'browse-kill-ring)
 (autoload 'org-mode "org")
 
+;; Load theme
+(load-theme 'klere t)
+
 ;; Do not implicitly add newlines
-(setq next-line-add-newlines 'nil)
+(setq next-line-add-newlines nil)
 
 ;; No backup files plz
 (setq make-backup-files nil)
@@ -48,6 +56,9 @@
 (setq-default tab-width 2)
 (setq-default indent-tabs-mode nil)
 
+;; Hide toolbar
+(tool-bar-mode -1)
+
 ;; Cut trailling whitespace on save
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
@@ -56,6 +67,12 @@
 
 ;; Mouse support in terminal
 (xterm-mouse-mode 1)
+
+;; Reload buffer when they have been modified on disk
+(global-auto-revert-mode t)
+
+;; Allow to restore window configurations
+(winner-mode 1)
 
 (defun reload-config ()
   "Reload configuration file"
@@ -67,12 +84,12 @@
   (interactive)
   (revert-buffer :ignore-auto :noconfirm))
 
-(defun kill-if-unmodified-or-query ()
+(defun kill-current-buffer ()
   "Kill current buffer, if it is unmodified"
   (interactive)
-  (if (or (not (buffer-modified-p)) (y-or-n-p "Kill current buffer ?"))
-      (kill-buffer)
-    (message "Buffer %s is conserved" (buffer-name))))
+  (if (string= (buffer-name) "*scratch*")
+      (message "Cannot kill scratch buffer")
+    (kill-buffer)))
 
 (defun open-config ()
   "Open the emacs configuration file"
@@ -84,13 +101,32 @@
   (interactive)
   (find-file-other-window "~/.emacs.d/init.el"))
 
+(defun show-current-filename ()
+  "Print the current buffer's filename"
+  (interactive)
+  (message (buffer-file-name)))
+
+(defun split-4-ways ()
+  "Split the window in four. Cursor remains in the top left window. Only works if there is only one window open."
+  (interactive)
+  (when (= 1 (length (window-list)))
+    (split-window-right)
+    (split-window-below)
+    (other-window 2)
+    (split-window-below)
+    (other-window 2)))
+
 ;; User keys
 (global-set-key (kbd "C-c r") 'reload-config)
 (global-set-key (kbd "C-c c") 'open-config)
 (global-set-key (kbd "C-c 4 c") 'open-config-other-window)
 (global-set-key (kbd "C-c l") 'revert-buffer-no-confirm)
-(global-set-key (kbd "C-c k") 'kill-if-unmodified-or-query)
+(global-set-key (kbd "C-c k") 'kill-current-buffer)
 (global-set-key (kbd "C-c y") 'browse-kill-ring)
+(global-set-key (kbd "C-c s") 'split-4-ways)
+(global-set-key (kbd "C-c w") 'show-current-filename)
+(global-set-key (kbd "C-c f") 'fold-this)
+(global-set-key (kbd "C-c u") 'fold-this-unfold-at-point)
 
 ;;compile file of optimization (?)
 ;;(defun byte-compile-if-newer-and-load (file)
@@ -104,19 +140,31 @@
 ;; Language settings
 
 ;; Ocaml
-(setq opam-share (substring (shell-command-to-string "opam config var share 2> /dev/null") 0 -1))
-(unless (string= "" opam-share)
-  (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
-  (add-to-list 'load-path "/usr/share/emacs/site-lisp/emacs-goodies-el")
-  (require 'ocp-indent)
-  (autoload 'merlin-mode "merlin")
-  (load (concat opam-share "/emacs/site-lisp/tuareg-site-file"))
-  (add-hook 'tuareg-mode-hook 'merlin-mode))
+(defun set-merlin-keys ()
+  "Set merlin keys"
+  (progn
+    (define-key merlin-mode-map (kbd "C-c &") nil)
+    (define-key merlin-mode-map (kbd "C-c p") 'merlin-pop-stack)))
+
+(require 'ocp-indent)
+(autoload 'merlin-mode "merlin" nil t nil)
+(autoload 'merlin-company-backend "merlin" nil t nil)
+(add-hook 'tuareg-mode-hook 'merlin-mode t)
+(add-hook 'caml-mode-hook 'merlin-mode t)
+(with-eval-after-load 'company
+  (add-to-list 'company-backends 'merlin-company-backend))
+(add-hook 'merlin-mode-hook 'company-mode t)
+(add-hook 'merlin-mode-hook 'set-merlin-keys t)
 
 ;; C/C++
 (add-hook 'c++-mode-hook 'irony-mode)
+(add-hook 'c++-mode-hook 'company-mode)
 (add-hook 'c-mode-hook 'irony-mode)
+(add-hook 'c-mode-hook 'company-mode)
 (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+(eval-after-load 'company
+  '(add-to-list 'company-backends 'company-irony))
+(setq c-default-style "bsd" c-basic-offset 2)
 
 ;; Lua
 (add-hook 'lua-mode-hook
@@ -137,7 +185,9 @@
 ;; Org-mode
 (add-hook 'orgstruct-mode-hook
           (lambda ()
-            (setq org-log-done :time)))
+            (setq-default org-log-done :time))
+          t)
+(setq org-support-shift-select t)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -146,7 +196,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (flycheck-irony yaml-mode smart-tab irony lua-mode browse-kill-ring))))
+    (edit-server-htmlize edit-server merlin tuareg projectile fold-this company-irony-c-headers company-irony klere-theme ## company flycheck-irony yaml-mode smart-tab irony lua-mode browse-kill-ring))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
