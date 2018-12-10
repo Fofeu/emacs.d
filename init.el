@@ -116,6 +116,12 @@
     (split-window-below)
     (other-window 2)))
 
+;; Sync packages
+(defun sync-packages ()
+  (interactive)
+  (dolist (pkg package-selected-packages)
+    (package-install pkg)))
+
 ;; User keys
 (global-set-key (kbd "C-c r") 'reload-config)
 (global-set-key (kbd "C-c c") 'open-config)
@@ -127,6 +133,9 @@
 (global-set-key (kbd "C-c w") 'show-current-filename)
 (global-set-key (kbd "C-c f") 'fold-this)
 (global-set-key (kbd "C-c u") 'fold-this-unfold-at-point)
+
+;; Post-init hook
+(add-hook 'after-init-hook 'sync-packages)
 
 ;;compile file of optimization (?)
 ;;(defun byte-compile-if-newer-and-load (file)
@@ -196,7 +205,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (edit-server-htmlize edit-server merlin tuareg projectile fold-this company-irony-c-headers company-irony klere-theme ## company flycheck-irony yaml-mode smart-tab irony lua-mode browse-kill-ring go-mode))))
+    (edit-server-htmlize edit-server merlin tuareg projectile fold-this company-irony-c-headers company-irony klere-theme company flycheck-irony yaml-mode smart-tab irony lua-mode browse-kill-ring go-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
