@@ -119,6 +119,7 @@
 ;; Sync packages
 (defun sync-packages ()
   (interactive)
+  (package-refresh-contents)
   (dolist (pkg package-selected-packages)
     (package-install pkg)))
 
