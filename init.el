@@ -135,6 +135,8 @@
 (global-set-key (kbd "C-c w") 'show-current-filename)
 (global-set-key (kbd "C-c f") 'fold-this)
 (global-set-key (kbd "C-c u") 'fold-this-unfold-at-point)
+(global-set-key (kbd "C-c g") 'goto-line)
+(global-set-key (kbd "C-c d") 'kill-whole-line)
 
 ;; Post-init hook
 (add-hook 'after-init-hook 'sync-packages)
