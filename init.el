@@ -204,6 +204,9 @@
           t)
 (setq org-support-shift-select t)
 
+;; LaTeX
+(setq-default TeX-master nil)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
