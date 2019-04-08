@@ -78,7 +78,7 @@
 (defun reload-config ()
   "Reload configuration file"
   (interactive)
-  (load-file "~/.emacs.d/init.el"))
+  (load-file user-init-file))
 
 (defun revert-buffer-no-confirm ()
   "Revert buffer without confirmation"
@@ -95,12 +95,12 @@
 (defun open-config ()
   "Open the emacs configuration file"
   (interactive)
-  (find-file "~/.emacs.d/init.el"))
+  (find-file user-init-file))
 
 (defun open-config-other-window ()
   "Open the emacs configuration file"
   (interactive)
-  (find-file-other-window "~/.emacs.d/init.el"))
+  (find-file-other-window user-init-file))
 
 (defun show-current-filename ()
   "Print the current buffer's filename"
