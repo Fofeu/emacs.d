@@ -39,8 +39,9 @@
 ;; Do not show the startup-screen
 (setq inhibit-startup-screen t)
 
-;; Scratch-pad has no initial text
+;; Scratch-pad has no initial text + fundamental-mode
 (setq initial-scratch-message "")
+(setq initial-major-mode 'fundamental-mode)
 
 ;; Highlight matching parenthesis
 (show-paren-mode 1)
