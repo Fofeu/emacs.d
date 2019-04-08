@@ -75,6 +75,9 @@
 ;; Allow to restore window configurations
 (winner-mode 1)
 
+;; Window focus follows mouse
+(setq mouse-autoselect-window t)
+
 (defun reload-config ()
   "Reload configuration file"
   (interactive)
