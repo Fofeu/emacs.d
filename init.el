@@ -176,6 +176,8 @@
 (eval-after-load 'company
   '(add-to-list 'company-backends 'company-irony))
 (setq c-default-style "bsd" c-basic-offset 2)
+(add-hook 'c-mode-hook 'hide-ifdef-mode)
+(add-hook 'hide-ifdef-mode-hook 'hide-ifdefs)
 
 ;; Lua
 (add-hook 'lua-mode-hook
