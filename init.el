@@ -205,7 +205,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (edit-server-htmlize edit-server merlin tuareg projectile fold-this company-irony-c-headers company-irony klere-theme company flycheck-irony yaml-mode smart-tab irony lua-mode browse-kill-ring go-mode))))
+    (flymake-rust rust-mode edit-server-htmlize edit-server merlin tuareg projectile fold-this company-irony-c-headers company-irony klere-theme company flycheck-irony yaml-mode smart-tab irony lua-mode browse-kill-ring go-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
