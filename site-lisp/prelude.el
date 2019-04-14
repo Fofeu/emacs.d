@@ -92,14 +92,21 @@
 
 (require 'compile)
 
-(defun prelude-compil-sentinel (proc str)
+(defun prelude-compil-sentinel (proc str switch)
   (with-current-buffer (process-buffer proc)
     (insert (format "%s %s" proc str)))
   (when (string-prefix-p "exited abnormally" str)
     (switch-to-buffer (process-buffer proc))
     (end-of-buffer))
   (when (string-prefix-p "finished" str)
-    (message "prelude compilation finished successfully")))
+    (message "prelude compilation finished successfully")
+    (when switch (switch-to-buffer (process-buffer proc)))))
+
+(defun prelude-compil-no-switch (proc str)
+  (prelude-compil-sentinel proc str nil))
+
+(defun prelude-compil-switch (proc str)
+  (prelude-compil-sentinel proc str t))
 
 (defun prelude-compil ()
   "Saves the file and calls the prelude compiler. Prompt for saving if
@@ -126,7 +133,7 @@
                "-node"
                node
                fichier)
-         :sentinel 'prelude-compil-sentinel)))))
+         :sentinel 'prelude-compil-no-switch)))))
 
 
 
@@ -156,7 +163,7 @@
                node
                "-print_clocks"
                fichier)
-         :sentinel 'prelude-compil-sentinel)))))
+         :sentinel 'prelude-compil-switch)))))
 
 
 (defun prelude-deadlines ()

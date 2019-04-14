@@ -39,8 +39,9 @@
 ;; Do not show the startup-screen
 (setq inhibit-startup-screen t)
 
-;; Scratch-pad has no initial text
+;; Scratch-pad has no initial text + fundamental-mode
 (setq initial-scratch-message "")
+(setq initial-major-mode 'fundamental-mode)
 
 ;; Highlight matching parenthesis
 (show-paren-mode 1)
@@ -74,10 +75,13 @@
 ;; Allow to restore window configurations
 (winner-mode 1)
 
+;; Window focus follows mouse
+(setq mouse-autoselect-window t)
+
 (defun reload-config ()
   "Reload configuration file"
   (interactive)
-  (load-file "~/.emacs.d/init.el"))
+  (load-file user-init-file))
 
 (defun revert-buffer-no-confirm ()
   "Revert buffer without confirmation"
@@ -94,12 +98,12 @@
 (defun open-config ()
   "Open the emacs configuration file"
   (interactive)
-  (find-file "~/.emacs.d/init.el"))
+  (find-file user-init-file))
 
 (defun open-config-other-window ()
   "Open the emacs configuration file"
   (interactive)
-  (find-file-other-window "~/.emacs.d/init.el"))
+  (find-file-other-window user-init-file))
 
 (defun show-current-filename ()
   "Print the current buffer's filename"
@@ -119,6 +123,7 @@
 ;; Sync packages
 (defun sync-packages ()
   (interactive)
+  (package-refresh-contents)
   (dolist (pkg package-selected-packages)
     (package-install pkg)))
 
@@ -133,6 +138,8 @@
 (global-set-key (kbd "C-c w") 'show-current-filename)
 (global-set-key (kbd "C-c f") 'fold-this)
 (global-set-key (kbd "C-c u") 'fold-this-unfold-at-point)
+(global-set-key (kbd "C-c g") 'goto-line)
+(global-set-key (kbd "C-c d") 'kill-whole-line)
 
 ;; Post-init hook
 (add-hook 'after-init-hook 'sync-packages)
@@ -174,6 +181,8 @@
 (eval-after-load 'company
   '(add-to-list 'company-backends 'company-irony))
 (setq c-default-style "bsd" c-basic-offset 2)
+(add-hook 'c-mode-hook 'hide-ifdef-mode)
+(add-hook 'hide-ifdef-mode-hook 'hide-ifdefs)
 
 ;; Lua
 (add-hook 'lua-mode-hook
@@ -198,6 +207,9 @@
           t)
 (setq org-support-shift-select t)
 
+;; LaTeX
+(setq-default TeX-master nil)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -205,7 +217,11 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (flymake-rust rust-mode edit-server-htmlize edit-server merlin tuareg projectile fold-this company-irony-c-headers company-irony klere-theme company flycheck-irony yaml-mode smart-tab irony lua-mode browse-kill-ring go-mode))))
+    (flymake-rust rust-mode buffer-move auctex iasm-mode edit-server-htmlize edit-server merlin tuareg projectile fold-this company-irony-c-headers company-irony klere-theme company flycheck-irony yaml-mode smart-tab irony lua-mode browse-kill-ring go-mode)))
+ '(safe-local-variable-values
+   (quote
+    ((TeX-command-extra-options . "-shell-escape")
+     (TeX-master . "main")))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
