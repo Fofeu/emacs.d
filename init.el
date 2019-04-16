@@ -73,7 +73,8 @@
 (global-auto-revert-mode t)
 
 ;; Allow to restore window configurations
-(winner-mode 1)
+;; Disabled for now
+;; (winner-mode 1)
 
 ;; Window focus follows mouse
 (setq mouse-autoselect-window t)
