@@ -142,14 +142,14 @@
 (global-set-key (kbd "C-c k") 'kill-current-buffer)
 (global-set-key (kbd "C-c y") 'browse-kill-ring)
 (global-set-key (kbd "C-c s") 'split-4-ways)
-(global-set-key (kbd "C-c w") 'show-current-filename)
+(global-set-key (kbd "C-c p") 'show-current-filename)
 (global-set-key (kbd "C-c f") 'fold-this)
 (global-set-key (kbd "C-c u") 'fold-this-unfold-at-point)
 (global-set-key (kbd "C-c g") 'goto-line)
 (global-set-key (kbd "C-c d") 'kill-whole-line)
 (global-set-key (kbd "C-c b <left>") 'buf-move-left)
 (global-set-key (kbd "C-c b <right>") 'buf-move-right)
-(global-set-key (kbd "C-c i w") 'ispell-word)
+(global-set-key (kbd "C-c w") 'ispell-word)
 (global-set-key (kbd "C-c q") 'exit-emacs-sensibly)
 
 ;; Post-init hook
