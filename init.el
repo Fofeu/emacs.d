@@ -128,6 +128,12 @@
   (dolist (pkg package-selected-packages)
     (package-install pkg)))
 
+(defun exit-emacs-sensibly ()
+  (interactive)
+  (if server-mode
+      (delete-frame)
+    (save-buffers-kill-terminal)))
+
 ;; User keys
 (global-set-key (kbd "C-c r") 'reload-config)
 (global-set-key (kbd "C-c c") 'open-config)
@@ -141,6 +147,10 @@
 (global-set-key (kbd "C-c u") 'fold-this-unfold-at-point)
 (global-set-key (kbd "C-c g") 'goto-line)
 (global-set-key (kbd "C-c d") 'kill-whole-line)
+(global-set-key (kbd "C-c b <left>") 'buf-move-left)
+(global-set-key (kbd "C-c b <right>") 'buf-move-right)
+(global-set-key (kbd "C-c i w") 'ispell-word)
+(global-set-key (kbd "C-c q") 'exit-emacs-sensibly)
 
 ;; Post-init hook
 (add-hook 'after-init-hook 'sync-packages)
