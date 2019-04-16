@@ -173,15 +173,18 @@
     (define-key merlin-mode-map (kbd "C-c &") nil)
     (define-key merlin-mode-map (kbd "C-c p") 'merlin-pop-stack)))
 
-;;(require 'ocp-indent)
-(autoload 'merlin-mode "merlin" nil t nil)
-(autoload 'merlin-company-backend "merlin" nil t nil)
-(add-hook 'tuareg-mode-hook 'merlin-mode)
-(add-hook 'caml-mode-hook 'merlin-mode)
-(with-eval-after-load 'company
-  (add-to-list 'company-backends 'merlin-company-backend))
-(add-hook 'merlin-mode-hook 'company-mode t)
-(add-hook 'merlin-mode-hook 'set-merlin-keys t)
+(let ((opam-bin (ignore-errors (car (process-lines "opam" "config" "var" "bin")))))
+ (when (and opam-bin (file-directory-p opam-bin))
+   (add-to-list 'exec-path opam-bin)
+   (require 'ocp-indent)
+   (autoload 'merlin-mode "merlin" nil t nil)
+   (autoload 'merlin-company-backend "merlin" nil t nil)
+   (add-hook 'tuareg-mode-hook 'merlin-mode t)
+   (add-hook 'caml-mode-hook 'merlin-mode t)
+   (with-eval-after-load 'company
+     (add-to-list 'company-backends 'merlin-company-backend))
+   (add-hook 'merlin-mode-hook 'company-mode t)
+   (add-hook 'merlin-mode-hook 'set-merlin-keys t)))
 
 ;; C/C++
 (add-hook 'c++-mode-hook 'irony-mode)
@@ -228,7 +231,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (merlin ocp-indent buffer-move auctex iasm-mode edit-server-htmlize edit-server tuareg projectile fold-this company-irony-c-headers company-irony klere-theme company flycheck-irony yaml-mode smart-tab irony lua-mode browse-kill-ring go-mode)))
+    (merlin ocp-indent flymake-rust rust-mode buffer-move auctex iasm-mode edit-server-htmlize edit-server tuareg projectile fold-this company-irony-c-headers company-irony klere-theme company flycheck-irony yaml-mode smart-tab irony lua-mode browse-kill-ring go-mode)))
  '(safe-local-variable-values
    (quote
     ((TeX-command-extra-options . "-shell-escape")
