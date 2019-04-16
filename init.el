@@ -173,11 +173,11 @@
     (define-key merlin-mode-map (kbd "C-c &") nil)
     (define-key merlin-mode-map (kbd "C-c p") 'merlin-pop-stack)))
 
-(require 'ocp-indent)
+;;(require 'ocp-indent)
 (autoload 'merlin-mode "merlin" nil t nil)
 (autoload 'merlin-company-backend "merlin" nil t nil)
-(add-hook 'tuareg-mode-hook 'merlin-mode t)
-(add-hook 'caml-mode-hook 'merlin-mode t)
+(add-hook 'tuareg-mode-hook 'merlin-mode)
+(add-hook 'caml-mode-hook 'merlin-mode)
 (with-eval-after-load 'company
   (add-to-list 'company-backends 'merlin-company-backend))
 (add-hook 'merlin-mode-hook 'company-mode t)
