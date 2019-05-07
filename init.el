@@ -237,7 +237,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (merlin ocp-indent flymake-rust rust-mode buffer-move auctex iasm-mode edit-server-htmlize edit-server tuareg projectile fold-this company-irony-c-headers company-irony klere-theme company flycheck-irony yaml-mode smart-tab irony lua-mode browse-kill-ring go-mode)))
+    (unfill merlin ocp-indent flymake-rust rust-mode buffer-move auctex iasm-mode edit-server-htmlize edit-server tuareg projectile fold-this company-irony-c-headers company-irony klere-theme company flycheck-irony yaml-mode smart-tab irony lua-mode browse-kill-ring go-mode)))
  '(safe-local-variable-values
    (quote
     ((TeX-command-extra-options . "-shell-escape")
