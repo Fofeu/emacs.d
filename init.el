@@ -154,8 +154,12 @@
 (global-set-key (kbd "C-c d") 'kill-whole-line)
 (global-set-key (kbd "C-c b <left>") 'buf-move-left)
 (global-set-key (kbd "C-c b <right>") 'buf-move-right)
+(global-set-key (kbd "C-c i b") 'ispell-buffer)
+(global-set-key (kbd "C-c i w") 'ispell-word)
 (global-set-key (kbd "C-c w") 'ispell-word)
 (global-set-key (kbd "C-c q") 'exit-emacs-sensibly)
+(global-set-key (kbd "C-c j f") 'fill-paragraph)
+(global-set-key (kbd "C-c j u") 'unfill-paragraph)
 
 ;; Post-init hook
 (add-hook 'after-init-hook 'sync-packages)
