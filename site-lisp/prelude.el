@@ -92,15 +92,23 @@
 
 (require 'compile)
 
+(defvar prelude-compil-buffer-name "*compil-prelude*")
+
+(defun switch-to-buffer-unless-opened (buffer)
+  (let ((window (car (member-if (lambda (w) (eq buffer (window-buffer w))) (window-list)))))
+    (if window
+        (select-window window)
+        (switch-to-buffer buffer))))
+
 (defun prelude-compil-sentinel (proc str switch)
   (with-current-buffer (process-buffer proc)
     (insert (format "%s %s" proc str)))
   (when (string-prefix-p "exited abnormally" str)
-    (switch-to-buffer (process-buffer proc))
+    (switch-to-buffer-unless-opened (process-buffer proc))
     (end-of-buffer))
   (when (string-prefix-p "finished" str)
     (message "prelude compilation finished successfully")
-    (when switch (switch-to-buffer (process-buffer proc)))))
+    (when switch (switch-to-buffer-unless-opened (process-buffer proc)))))
 
 (defun prelude-compil-no-switch (proc str)
   (prelude-compil-sentinel proc str nil))
@@ -124,10 +132,10 @@
     (if (and (not prelude-ask-node-mode) (eq node ""))
         (message "no node to compile.")
       (progn
-        (get-buffer-create "*compil-prelude*")
+        (get-buffer-create prelude-compil-buffer-name)
         (make-process
          :name "prelude-compilation"
-         :buffer "*compil-prelude*"
+         :buffer prelude-compil-buffer-name
          :command
          (list prelude-compiler-name
                "-node"
@@ -153,10 +161,10 @@
     (if (and (not prelude-ask-node-mode) (eq node ""))
         (message "no node to compile.")
       (progn
-        (get-buffer-create "*compil-prelude*")
+        (get-buffer-create prelude-compil-buffer-name)
         (make-process
          :name "prelude-compilation"
-         :buffer "*compil-prelude*"
+         :buffer prelude-compil-buffer-name
          :command
          (list prelude-compiler-name
                "-node"
@@ -184,12 +192,12 @@
       (progn
         (delete-other-windows)
         (split-window-vertically)
-        (get-buffer-create "*compil-prelude*")
+        (get-buffer-create prelude-compil-buffer-name)
         (select-window (next-window))
-        (switch-to-buffer "*compil-prelude*")
+        (switch-to-buffer prelude-compil-buffer-name)
         (erase-buffer)
         (start-process "prelude-compilation"
-                       "*compil-prelude*"
+                       prelude-compil-buffer-name
                        prelude-compiler-name
                        "-node"
                        node
@@ -262,7 +270,7 @@
       '(("--.*$" . font-lock-comment-face)
         ("(\\*\\(.\\|\n\\)*?\\*)" . font-lock-comment-face)
         ("node *\\([a-zA-Z0-9_-]*\\) *(" 1 prelude-font-lock-governing-face nil nil)
-        ("\\<\\(const\\|sensor\\|imported\\|actuator\\|wcet\\|let\\|node\\|returns\\|req\\|tel\\|type\\|due\\|before\\|rate\\|var\\)\\>" 1 font-lock-keyword-face nil nil)
+        ("\\<\\(const\\|sensor\\|imported\\|actuator\\|wcet\\|stack\\|let\\|node\\|returns\\|req\\|tel\\|type\\|due\\|before\\|rate\\|var\\)\\>" 1 font-lock-keyword-face nil nil)
         ("\\<\\(node\\|let\\|tel\\)\\>[ \t\n]" 1 prelude-font-lock-multistage-face nil nil)
         ("\\<\\(true\\|and\\|fby\\|merge\\|tail\\|when\\|whennot\\|false\\)\\>" . font-lock-reference-face)
         ("\\(\\(/\\|\\*\\)^\\|::\\)" . font-lock-reference-face)
