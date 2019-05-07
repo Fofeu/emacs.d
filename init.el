@@ -126,7 +126,12 @@
   (interactive)
   (package-refresh-contents)
   (dolist (pkg package-selected-packages)
-    (package-install pkg)))
+    (let* ((archive-pkg (car (cdr (assoc pkg package-archive-contents))))
+           (archive-version (package-desc-version archive-pkg))
+           (local-pkg (car (cdr (assoc pkg package-alist))))
+           (local-version (package-desc-version local-pkg)))
+      (when (version-list-< local-version archive-version)
+        (package-reinstall pkg)))))
 
 (defun exit-emacs-sensibly ()
   (interactive)
