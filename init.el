@@ -217,6 +217,7 @@
 
 ;; Prelude
 (setq auto-mode-alist (cons '("\\.plu$" . prelude-mode) auto-mode-alist))
+(add-to-list 'exec-path "~/site/prelude/bin")
 (autoload 'prelude-mode "prelude" "Edition de code prelude" t)
 
 ;; Org-mode
