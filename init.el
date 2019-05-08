@@ -128,10 +128,12 @@
   (dolist (pkg package-selected-packages)
     (let* ((archive-pkg (car (cdr (assoc pkg package-archive-contents))))
            (archive-version (package-desc-version archive-pkg))
-           (local-pkg (car (cdr (assoc pkg package-alist))))
-           (local-version (package-desc-version local-pkg)))
-      (when (version-list-< local-version archive-version)
-        (package-reinstall pkg)))))
+           (local-pkg (car (cdr (assoc pkg package-alist)))))
+      (cond
+       ((null local-pkg)
+        (package-install pkg))
+       ((version-list-< (package-desc-version local-pkg) archive-version)
+        (package-reinstall pkg))))))
 
 (defun exit-emacs-sensibly ()
   (interactive)
