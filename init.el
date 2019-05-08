@@ -126,7 +126,12 @@
   (interactive)
   (package-refresh-contents)
   (dolist (pkg package-selected-packages)
-    (package-install pkg)))
+    (let* ((archive-pkg (car (cdr (assoc pkg package-archive-contents))))
+           (archive-version (package-desc-version archive-pkg))
+           (local-pkg (car (cdr (assoc pkg package-alist))))
+           (local-version (package-desc-version local-pkg)))
+      (when (version-list-< local-version archive-version)
+        (package-reinstall pkg)))))
 
 (defun exit-emacs-sensibly ()
   (interactive)
@@ -153,8 +158,12 @@
 (global-set-key (kbd "C-c d") 'kill-whole-line)
 (global-set-key (kbd "C-c b <left>") 'buf-move-left)
 (global-set-key (kbd "C-c b <right>") 'buf-move-right)
+(global-set-key (kbd "C-c i b") 'ispell-buffer)
+(global-set-key (kbd "C-c i w") 'ispell-word)
 (global-set-key (kbd "C-c w") 'ispell-word)
 (global-set-key (kbd "C-c q") 'exit-emacs-sensibly)
+(global-set-key (kbd "C-c j f") 'fill-paragraph)
+(global-set-key (kbd "C-c j u") 'unfill-paragraph)
 
 ;; Post-init hook
 (add-hook 'after-init-hook 'sync-packages)
@@ -216,6 +225,7 @@
 
 ;; Prelude
 (setq auto-mode-alist (cons '("\\.plu$" . prelude-mode) auto-mode-alist))
+(add-to-list 'exec-path "~/site/prelude/bin")
 (autoload 'prelude-mode "prelude" "Edition de code prelude" t)
 
 ;; Org-mode
@@ -235,7 +245,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (merlin ocp-indent flymake-rust rust-mode buffer-move auctex iasm-mode edit-server-htmlize edit-server tuareg projectile fold-this company-irony-c-headers company-irony klere-theme company flycheck-irony yaml-mode smart-tab irony lua-mode browse-kill-ring go-mode)))
+    (unfill merlin ocp-indent flymake-rust rust-mode buffer-move auctex iasm-mode edit-server-htmlize edit-server tuareg projectile fold-this company-irony-c-headers company-irony klere-theme company flycheck-irony yaml-mode smart-tab irony lua-mode browse-kill-ring go-mode)))
  '(safe-local-variable-values
    (quote
     ((TeX-command-extra-options . "-shell-escape")
