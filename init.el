@@ -152,7 +152,7 @@
 (global-set-key (kbd "C-c l") 'revert-buffer-no-confirm)
 (global-set-key (kbd "C-c k") 'kill-current-buffer)
 (global-set-key (kbd "C-c y") 'browse-kill-ring)
-(global-set-key (kbd "C-c s") 'split-4-ways)
+;;(global-set-key (kbd "C-c s") 'mode-skeleton)
 (global-set-key (kbd "C-c p") 'show-current-filename)
 (global-set-key (kbd "C-c f") 'fold-this)
 (global-set-key (kbd "C-c u") 'fold-this-unfold-at-point)
@@ -240,6 +240,45 @@
 
 ;; LaTeX
 (setq-default TeX-master nil)
+
+(define-skeleton latex-skeleton
+  "Inserts a Latex skelleton with average settings"
+
+  "Class: "
+  "\\documentclass{" str | "article"  "}\n"
+  "\n"
+  "\\usepackage{multicol}\n"
+  "\\usepackage[OT1]{fontenc}\n"
+  "\\usepackage[utf8]{inputenc}\n"
+  "\n"
+  "\\usepackage{listings}\n"
+  "\\usepackage[stable]{footmisc}\n"
+  "\\usepackage{hyperref}\n"
+  "\\usepackage{amssymb}\n"
+  "\\usepackage{amsmath}\n"
+  "\\usepackage{rtsched}\n"
+  "\\usepackage{multido}\n"
+  "\\usepackage{multirow}\n"
+  "\\usepackage{makecell}\n"
+  "\\usepackage{diagbox}\n"
+  "\\usepackage{cite}\n"
+  "\n"
+  "\\usepackage{minted}\n"
+  "\\usemintedstyle{pastie}\n"
+  "\n"
+  "\\usepackage{tikz}\n"
+  "\\usetikzlibrary{positioning}\n"
+  "\\usetikzlibrary{calc}\n"
+  "\n"
+  "\\begin{document}\n"
+  _ "\n"
+  "\\end{document}\n\n"
+  "%%% Local Variables:\n"
+  "%%% mode: latex\n"
+  "%%% TeX-command-extra-options: \"-shell-escape\"\n"
+  "%%% TeX-master: t\n"
+  "%%% End:")
+(global-set-key (kbd "C-c s") 'latex-skeleton)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
