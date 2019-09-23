@@ -162,6 +162,7 @@
 (global-set-key (kbd "C-c b <right>") 'buf-move-right)
 (global-set-key (kbd "C-c i b") 'ispell-buffer)
 (global-set-key (kbd "C-c i w") 'ispell-word)
+(global-set-key (kbd "C-c i d") 'ispell-change-dictionary)
 (global-set-key (kbd "C-c w") 'ispell-word)
 (global-set-key (kbd "C-c q") 'exit-emacs-sensibly)
 (global-set-key (kbd "C-c j f") 'fill-paragraph)
