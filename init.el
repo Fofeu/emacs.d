@@ -135,6 +135,11 @@
        ((version-list-< (package-desc-version local-pkg) archive-version)
         (package-reinstall pkg))))))
 
+(defun sync-packages-if-daemon ()
+  (interactive)
+  (if (daemonp)
+      (sync-packages)))
+
 (defun exit-emacs-sensibly ()
   (interactive)
   (if server-mode
@@ -168,7 +173,7 @@
 (global-set-key (kbd "C-c j u") 'unfill-paragraph)
 
 ;; Post-init hook
-(add-hook 'after-init-hook 'sync-packages)
+(add-hook 'after-init-hook 'sync-packages-if-daemon)
 
 ;;compile file of optimization (?)
 ;;(defun byte-compile-if-newer-and-load (file)
