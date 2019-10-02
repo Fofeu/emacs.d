@@ -152,17 +152,19 @@
 
 ;; User keys
 (global-set-key (kbd "C-c r") 'reload-config)
-(global-set-key (kbd "C-c c") 'open-config)
+(global-set-key (kbd "C-c c r") 'comment-region)
+(global-set-key (kbd "C-c c u") 'uncomment-region)
+(global-set-key (kbd "C-c c c") 'open-config)
 (global-set-key (kbd "C-c 4 c") 'open-config-other-window)
 (global-set-key (kbd "C-c l") 'revert-buffer-no-confirm)
 (global-set-key (kbd "C-c k") 'kill-current-buffer)
 (global-set-key (kbd "C-c y") 'browse-kill-ring)
 ;;(global-set-key (kbd "C-c s") 'mode-skeleton)
 (global-set-key (kbd "C-c p") 'show-current-filename)
-(global-set-key (kbd "C-c f") 'fold-this)
-(global-set-key (kbd "C-c u") 'fold-this-unfold-at-point)
+(global-set-key (kbd "C-c f f") 'fold-this)
+(global-set-key (kbd "C-c f u") 'fold-this-unfold-at-point)
 (global-set-key (kbd "C-c g") 'goto-line)
-(global-set-key (kbd "C-c d") 'kill-whole-line)
+;;(global-set-key (kbd "C-c d") 'kill-whole-line)
 (global-set-key (kbd "C-c b <left>") 'buf-move-left)
 (global-set-key (kbd "C-c b <right>") 'buf-move-right)
 (global-set-key (kbd "C-c i b") 'ispell-buffer)
@@ -171,6 +173,7 @@
 (global-set-key (kbd "C-c q") 'exit-emacs-sensibly)
 (global-set-key (kbd "C-c j f") 'fill-paragraph)
 (global-set-key (kbd "C-c j u") 'unfill-paragraph)
+(global-set-key (kbd "C-c d b") 'ediff-buffers)
 
 ;; Post-init hook
 (add-hook 'after-init-hook 'sync-packages-if-daemon)
