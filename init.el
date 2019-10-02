@@ -148,7 +148,7 @@
 
 (defun wc()
   (interactive)
-  (shell-command (concat "wc -w " buffer-file-name)))
+  (shell-command (shell-quote-argument (concat "wc -w " buffer-file-name))))
 
 ;; User keys
 (global-set-key (kbd "C-c r") 'reload-config)
