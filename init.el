@@ -197,17 +197,17 @@
     (define-key merlin-mode-map (kbd "C-c p") 'merlin-pop-stack)))
 
 (let ((opam-bin (ignore-errors (car (process-lines "opam" "config" "var" "bin")))))
- (when (and opam-bin (file-directory-p opam-bin))
-   (add-to-list 'exec-path opam-bin)
-   (require 'ocp-indent)
-   (autoload 'merlin-mode "merlin" nil t nil)
-   (autoload 'merlin-company-backend "merlin" nil t nil)
-   (add-hook 'tuareg-mode-hook 'merlin-mode t)
-   (add-hook 'caml-mode-hook 'merlin-mode t)
-   (with-eval-after-load 'company
-     (add-to-list 'company-backends 'merlin-company-backend))
-   (add-hook 'merlin-mode-hook 'company-mode t)
-   (add-hook 'merlin-mode-hook 'set-merlin-keys t)))
+  (when (and opam-bin (file-directory-p opam-bin))
+    (add-to-list 'exec-path opam-bin)
+    (require 'ocp-indent)
+    (autoload 'merlin-mode "merlin" nil t nil)
+    (autoload 'merlin-company-backend "merlin" nil t nil)
+    (add-hook 'tuareg-mode-hook 'merlin-mode t)
+    (add-hook 'caml-mode-hook 'merlin-mode t)
+    (with-eval-after-load 'company
+      (add-to-list 'company-backends 'merlin-company-backend))
+    (add-hook 'merlin-mode-hook 'company-mode t)
+    (add-hook 'merlin-mode-hook 'set-merlin-keys t)))
 
 ;; C/C++
 (add-hook 'c++-mode-hook 'irony-mode)
@@ -223,14 +223,14 @@
 
 ;; Lua
 (add-hook 'lua-mode-hook
-	  (lambda()
-	    (setq-default lua-indent-level 2)))
+          (lambda()
+            (setq-default lua-indent-level 2)))
 
-;; Pyton
+;; Python
 (add-hook 'python-mode-hook
-	  (lambda ()
-	    (setq python-indent 2)
-	  (untabify (point-min) (point-max))))
+          (lambda ()
+            (setq python-indent 2)
+            (untabify (point-min) (point-max))))
 
 
 ;; Prelude
@@ -245,8 +245,37 @@
           t)
 (setq org-support-shift-select t)
 
+;; Store latex previews in /tmp
+(setq org-preview-latex-image-directory "/tmp/ltximg/")
+
+(defvar org-latex-scale-factor 3
+  "The scale factor applied to LaTeX-fragments in org-mode")
+
+(defun org-latex-increase-scale()
+  "Applies org-latex-scale-factor"
+  (setq org-format-latex-options
+        (plist-put org-format-latex-options :scale org-latex-scale-factor)))
+(add-hook 'org-mode-hook 'org-latex-increase-scale)
+
+(defun latex-org-add-packages ()
+  "Add packages to compilation of latex-fragments in org-mode"
+  (cons '(nil "bussproofs" t) org-latex-packages-alist)
+  (message "blerp"))
+(add-hook 'org-mode-hook 'latex-org-add-packages)
+
+;; Coq
+(add-hook 'coq-mode-hook #'company-coq-mode)
+
 ;; LaTeX
 (setq-default TeX-master nil)
+
+(unless (image-type-available-p 'xpm)
+  (setq LaTeX-enable-toolbar nil))
+
+(defun latex-config-zathura ()
+  "Configure LaTeX mode to support zathura"
+  (add-to-list 'TeX-view-program-selection
+               '(output-pdf "Zathura")))
 
 (define-skeleton latex-skeleton
   "Inserts a Latex skelleton with average settings"
@@ -285,7 +314,11 @@
   "%%% TeX-command-extra-options: \"-shell-escape\"\n"
   "%%% TeX-master: t\n"
   "%%% End:")
-(global-set-key (kbd "C-c s") 'latex-skeleton)
+(defun latex-skeleton-add-key()
+  (local-set-key (kbd "C-c s") 'latex-skeleton))
+
+(add-hook 'LaTeX-mode-hook 'latex-skeleton-add-key)
+(add-hook 'LaTeX-mode-hook 'latex-config-zathura)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
