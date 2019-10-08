@@ -169,6 +169,7 @@
 (global-set-key (kbd "C-c b <right>") 'buf-move-right)
 (global-set-key (kbd "C-c i b") 'ispell-buffer)
 (global-set-key (kbd "C-c i w") 'ispell-word)
+(global-set-key (kbd "C-c i d") 'ispell-change-dictionary)
 (global-set-key (kbd "C-c w") 'ispell-word)
 (global-set-key (kbd "C-c q") 'exit-emacs-sensibly)
 (global-set-key (kbd "C-c j f") 'fill-paragraph)
@@ -327,7 +328,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (proof-general company-coq csv-mode unfill merlin ocp-indent flymake-rust rust-mode buffer-move auctex iasm-mode edit-server-htmlize edit-server tuareg projectile fold-this company-irony-c-headers company-irony klere-theme company flycheck-irony yaml-mode smart-tab irony lua-mode browse-kill-ring go-mode)))
+    (proof-general company-coq csv-mode json-mode unfill merlin ocp-indent flymake-rust rust-mode buffer-move auctex iasm-mode edit-server-htmlize edit-server tuareg projectile fold-this company-irony-c-headers company-irony klere-theme company flycheck-irony yaml-mode smart-tab irony lua-mode browse-kill-ring go-mode)))
  '(safe-local-variable-values
    (quote
     ((TeX-command-extra-options . "-shell-escape")
