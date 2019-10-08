@@ -57,7 +57,8 @@
 (setq-default indent-tabs-mode nil)
 
 ;; Hide toolbar
-(tool-bar-mode -1)
+(when (display-graphic-p)
+  (tool-bar-mode -1))
 
 ;; Cut trailling whitespace on save
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
