@@ -23,7 +23,6 @@
   (edit-server-start))
 
 ;; Load libs
-(require 'browse-kill-ring)
 (autoload 'org-mode "org")
 
 ;; Load theme
