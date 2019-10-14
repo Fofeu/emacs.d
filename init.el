@@ -56,9 +56,15 @@
 (setq-default tab-width 2)
 (setq-default indent-tabs-mode nil)
 
-;; Hide toolbar
-(when (display-graphic-p)
-  (tool-bar-mode -1))
+;; Frame setup
+(defun frame-setup (&optional frame)
+  "Function callend when frame is configured.
+Currently only disables tool-bar in graphical mode."
+  (when (display-graphic-p frame)
+    (tool-bar-mode -1)))
+
+(mapc 'frame-setup (frame-list))
+(add-hook 'after-make-frame-functions 'frame-setup)
 
 ;; Cut trailling whitespace on save
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
