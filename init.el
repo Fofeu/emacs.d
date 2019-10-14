@@ -255,7 +255,7 @@ Currently only disables tool-bar in graphical mode."
 ;; Store latex previews in /tmp
 (setq org-preview-latex-image-directory "/tmp/ltximg/")
 
-(defvar org-latex-scale-factor 3
+(defvar org-latex-scale-factor 1.5
   "The scale factor applied to LaTeX-fragments in org-mode")
 
 (defun org-latex-increase-scale()
