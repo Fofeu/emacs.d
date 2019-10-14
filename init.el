@@ -326,6 +326,7 @@ Currently only disables tool-bar in graphical mode."
 
 (add-hook 'LaTeX-mode-hook 'latex-skeleton-add-key)
 (add-hook 'LaTeX-mode-hook 'latex-config-zathura)
+(add-hook 'LaTeX-mode-hook 'reftex-mode)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
