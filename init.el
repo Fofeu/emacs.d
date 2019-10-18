@@ -23,7 +23,7 @@
   (edit-server-start))
 
 ;; Load theme
-(load-theme 'klere t)
+(load-theme 'tangotango t)
 
 ;; Do not implicitly add newlines
 (setq next-line-add-newlines nil)
