@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t -*-
 ;; Configure MELPA
 (require 'package)
 (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
