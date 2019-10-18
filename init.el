@@ -22,9 +22,6 @@
   (setq edit-server-new-frame nil)
   (edit-server-start))
 
-;; Load libs
-(autoload 'org-mode "org")
-
 ;; Load theme
 (load-theme 'klere t)
 
@@ -251,11 +248,12 @@ Currently only disables tool-bar in graphical mode."
             (setq-default org-log-done :time))
           t)
 (setq org-support-shift-select t)
+(setq org-log-done t)
 
 ;; Store latex previews in /tmp
 (setq org-preview-latex-image-directory "/tmp/ltximg/")
 
-(defvar org-latex-scale-factor 1.5
+(defvar org-latex-scale-factor 1.3
   "The scale factor applied to LaTeX-fragments in org-mode")
 
 (defun org-latex-increase-scale()
@@ -266,8 +264,7 @@ Currently only disables tool-bar in graphical mode."
 
 (defun latex-org-add-packages ()
   "Add packages to compilation of latex-fragments in org-mode"
-  (cons '(nil "bussproofs" t) org-latex-packages-alist)
-  (message "blerp"))
+  (cons '(nil "bussproofs" t) org-latex-packages-alist))
 (add-hook 'org-mode-hook 'latex-org-add-packages)
 
 ;; Coq
