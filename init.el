@@ -139,11 +139,6 @@ Currently only disables tool-bar in graphical mode."
        ((version-list-< (package-desc-version local-pkg) archive-version)
         (package-reinstall pkg))))))
 
-(defun sync-packages-if-daemon ()
-  (interactive)
-  (if (daemonp)
-      (sync-packages)))
-
 (defun exit-emacs-sensibly ()
   (interactive)
   (if server-mode
@@ -181,7 +176,8 @@ Currently only disables tool-bar in graphical mode."
 (global-set-key (kbd "C-c d b") 'ediff-buffers)
 
 ;; Post-init hook
-(add-hook 'after-init-hook 'sync-packages-if-daemon)
+(if (daemonp)
+    (add-hook 'after-init-hook 'sync-packages t))
 
 ;;compile file of optimization (?)
 ;;(defun byte-compile-if-newer-and-load (file)
