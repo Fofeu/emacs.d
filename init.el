@@ -188,6 +188,14 @@ Currently only disables tool-bar in graphical mode."
 ;;    (load file))
 ;;(byte-compile-if-newer-and-load "~/.emacs.d/init")
 
+;; Package configurations
+
+(defun company-customization ()
+  "Set company customization"
+  (setq company-minimum-prefix-length 1))
+
+(add-hook 'company-mode-hook 'company-customization)
+
 ;; Language settings
 
 ;; Ocaml
