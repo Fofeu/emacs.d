@@ -23,8 +23,12 @@
   (setq edit-server-new-frame nil)
   (edit-server-start))
 
-;; Load theme
-(load-theme 'tangotango t)
+;; Theme configuration
+(defvar 'theme 'tangotango "The current theme")
+(defun configure-theme ()
+  "Loads the theme using the variable theme"
+  (load-theme 'theme t))
+(add-hook 'post-init-hook 'configure-theme)
 
 ;; Do not implicitly add newlines
 (setq next-line-add-newlines nil)
