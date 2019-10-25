@@ -24,11 +24,11 @@
   (edit-server-start))
 
 ;; Theme configuration
-(defvar 'theme 'tangotango "The current theme")
-(defun configure-theme ()
+(defvar theme 'tangotango "The current theme")
+(defun ffort-theme-configure-theme ()
   "Loads the theme using the variable theme"
-  (load-theme 'theme t))
-(add-hook 'post-init-hook 'configure-theme)
+  (load-theme theme t))
+(add-hook 'after-init-hook 'ffort-theme-configure-theme)
 
 ;; Do not implicitly add newlines
 (setq next-line-add-newlines nil)
