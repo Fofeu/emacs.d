@@ -42,7 +42,7 @@
 
 ;; Scratch-pad has no initial text + fundamental-mode
 (setq initial-scratch-message "")
-(setq initial-major-mode 'fundamental-mode)
+(setq initial-major-mode 'text-mode)
 
 ;; Highlight matching parenthesis
 (show-paren-mode 1)
@@ -178,6 +178,7 @@ Currently only disables tool-bar in graphical mode."
 (global-set-key (kbd "C-c j f") 'fill-paragraph)
 (global-set-key (kbd "C-c j u") 'unfill-paragraph)
 (global-set-key (kbd "C-c d b") 'ediff-buffers)
+(global-set-key (kbd "<insert>") nil)
 
 ;; Post-init hook
 (if (daemonp)
@@ -192,15 +193,9 @@ Currently only disables tool-bar in graphical mode."
 ;;    (load file))
 ;;(byte-compile-if-newer-and-load "~/.emacs.d/init")
 
-;; Package configurations
-
-(defun company-customization ()
-  "Set company customization"
-  (setq company-minimum-prefix-length 1))
-
-(add-hook 'company-mode-hook 'company-customization)
-
 ;; Language settings
+;; Language Server Protocol (LSP)
+(add-hook 'prog-mode-hook #'lsp)
 
 ;; Ocaml
 (defun set-merlin-keys ()
@@ -223,26 +218,14 @@ Currently only disables tool-bar in graphical mode."
     (add-hook 'merlin-mode-hook 'set-merlin-keys t)))
 
 ;; C/C++
-(add-hook 'c++-mode-hook 'irony-mode)
 (add-hook 'c++-mode-hook 'company-mode)
-(add-hook 'c-mode-hook 'irony-mode)
 (add-hook 'c-mode-hook 'company-mode)
-(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
-(eval-after-load 'company
-  '(add-to-list 'company-backends 'company-irony))
-(setq c-default-style "bsd" c-basic-offset 2)
 (add-hook 'c-mode-hook 'hide-ifdef-mode)
 (add-hook 'hide-ifdef-mode-hook 'hide-ifdefs)
-
-;; Lua
-(add-hook 'lua-mode-hook
-          (lambda()
-            (setq-default lua-indent-level 2)))
 
 ;; Python
 (add-hook 'python-mode-hook
           (lambda ()
-            (setq python-indent 2)
             (untabify (point-min) (point-max))))
 
 
@@ -251,37 +234,8 @@ Currently only disables tool-bar in graphical mode."
 (add-to-list 'exec-path "~/site/prelude/bin")
 (autoload 'prelude-mode "prelude" "Edition de code prelude" t)
 
-;; Org-mode
-(add-hook 'orgstruct-mode-hook
-          (lambda ()
-            (setq-default org-log-done :time))
-          t)
-(setq org-support-shift-select t)
-(setq org-log-done t)
-
-;; Store latex previews in /tmp
-(setq org-preview-latex-image-directory "/tmp/ltximg/")
-
-(defvar org-latex-scale-factor 1.3
-  "The scale factor applied to LaTeX-fragments in org-mode")
-
-(defun org-latex-increase-scale()
-  "Applies org-latex-scale-factor"
-  (setq org-format-latex-options
-        (plist-put org-format-latex-options :scale org-latex-scale-factor)))
-(add-hook 'org-mode-hook 'org-latex-increase-scale)
-
-(defun latex-org-add-packages ()
-  "Add packages to compilation of latex-fragments in org-mode"
-  (cons '(nil "bussproofs" t) org-latex-packages-alist))
-(add-hook 'org-mode-hook 'latex-org-add-packages)
-
-;; Coq
-(add-hook 'coq-mode-hook #'company-coq-mode)
 
 ;; LaTeX
-(setq-default TeX-master nil)
-
 (unless (image-type-available-p 'xpm)
   (setq LaTeX-enable-toolbar nil))
 
@@ -322,7 +276,7 @@ Currently only disables tool-bar in graphical mode."
   "\\begin{document}\n"
   _ "\n"
   "\\end{document}\n\n"
-  "%%% Local Variables:\n"
+  "%%% Local"" Variables:\n"
   "%%% mode: latex\n"
   "%%% TeX-command-extra-options: \"-shell-escape\"\n"
   "%%% TeX-master: t\n"
@@ -334,14 +288,48 @@ Currently only disables tool-bar in graphical mode."
 (add-hook 'LaTeX-mode-hook 'latex-config-zathura)
 (add-hook 'LaTeX-mode-hook 'reftex-mode)
 
+;; HTML
+(defun render-html-inplace ()
+  (interactive)
+  (let (
+        (srcbuf (current-buffer))
+        (dstbuf (get-buffer-create "*html-render*")))
+    (message "srcbuf %s dstbuf %s" srcbuf dstbuf)
+    (with-current-buffer dstbuf
+      (erase-buffer)
+      (shr-insert-document
+       (with-current-buffer srcbuf
+         (libxml-parse-html-region (point-min) (point-max))))
+      )
+      ;;(switch-to-buffer dstbuf)
+    )
+  )
+
+(add-hook 'html-mode-hook 'render-html-inplace)
+
+;; Custom variables
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(TeX-master nil)
+ '(c-basic-offset 2)
+ '(c-default-style "bsd")
+ '(company-minimum-prefix-length 0)
+ '(lua-indent-level 2)
+ '(org-export-show-temporary-export-buffer nil)
+ '(org-format-latex-options
+   (quote
+    (:foreground default :background default :scale 1.3 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
+                 ("begin" "$1" "$" "$$" "\\(" "\\["))))
+ '(org-log-done :time)
+ '(org-preview-latex-image-directory "/tmp/ltximg/")
  '(package-selected-packages
    (quote
-    (tangotango-theme presentation proof-general company-coq csv-mode json-mode unfill merlin ocp-indent flymake-rust rust-mode buffer-move auctex iasm-mode edit-server-htmlize edit-server tuareg projectile fold-this company-irony-c-headers company-irony company flycheck-irony yaml-mode smart-tab lua-mode browse-kill-ring go-mode)))
+    (buttons graphviz-dot-mode lsp-mode tangotango-theme presentation csv-mode json-mode unfill merlin ocp-indent buffer-move auctex iasm-mode edit-server-htmlize edit-server tuareg projectile fold-this company yaml-mode smart-tab lua-mode browse-kill-ring)))
+ '(python-indent-offset 2)
  '(safe-local-variable-values
    (quote
     ((TeX-command-extra-options . "-shell-escape")
