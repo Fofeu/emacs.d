@@ -3,3 +3,6 @@ elpa
 auto-save-list
 ac-comphist.dat
 irony
+.cache
+.lsp-session-v1
+projectile-bookmarks.eld
