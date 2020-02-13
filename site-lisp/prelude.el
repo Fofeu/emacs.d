@@ -1,9 +1,13 @@
 ;;; prelude.el  -  Major mode for editing prelude source in Emacs
 
 ;;; 2011 Rémy Wyss
+;;; 2019 Frédéric Fort
 
 ;;; Auteur : Rémy WYSS
 ;;; Date   : 1 / 10 / 2011
+
+;;; Author : Frédéric Fort
+;;; Date   : 1 / 1 / 2019 - 31 / 12 / 2019
 
 ;;; This file is not part of GNU Emacs
 
@@ -49,7 +53,7 @@
 
 
 ;; version of prelude-mode
-(defconst prelude-mode-version "1.1")
+(defconst prelude-mode-version "1.1.beta")
 
 ;;; Customisable values :
 
@@ -78,14 +82,10 @@
 (if prelude-mode-map
     ()
   (setq prelude-mode-map (make-sparse-keymap))
-  ;;  (define-key prelude-mode-map ","   'electric-prelude-special-char)
-  ;;  (define-key prelude-mode-map ":"   'electric-prelude-special-char)
-  (define-key prelude-mode-map "\C-c\C-c" 'prelude-compil)
-  (define-key prelude-mode-map "\C-c\C-h" 'prelude-clocks)
-  (define-key prelude-mode-map "\C-c\C-d" 'prelude-deadlines)
-  (define-key prelude-mode-map "\r"  'electric-prelude-end-of-line)
-  ;;  (define-key prelude-mode-map "\t"  'electric-prelude-tab)
-  )
+  (define-key prelude-mode-map (kbd "C-c C-c") 'prelude-compil)
+  (define-key prelude-mode-map (kbd "C-c C-h") 'prelude-clocks)
+  (define-key prelude-mode-map (kbd "C-c C-d") 'prelude-deadlines)
+  (define-key prelude-mode-map "\r"  'electric-prelude-end-of-line))
 
 
 ;;; Compilation -------------------------------------------------
@@ -102,13 +102,15 @@
 
 (defun prelude-compil-sentinel (proc str switch)
   (with-current-buffer (process-buffer proc)
-    (insert (format "%s %s" proc str)))
+    (goto-char (point-max))
+    (insert (format "%s %s" proc str))
+    (goto-char (point-max)))
   (when (string-prefix-p "exited abnormally" str)
-    (switch-to-buffer-unless-opened (process-buffer proc))
-    (end-of-buffer))
+    (switch-to-buffer-unless-opened (process-buffer proc)))
   (when (string-prefix-p "finished" str)
     (message "prelude compilation finished successfully")
-    (when switch (switch-to-buffer-unless-opened (process-buffer proc)))))
+    (when switch
+      (switch-to-buffer-unless-opened (process-buffer proc)))))
 
 (defun prelude-compil-no-switch (proc str)
   (prelude-compil-sentinel proc str nil))
@@ -138,6 +140,7 @@
          :buffer prelude-compil-buffer-name
          :command
          (list prelude-compiler-name
+               "-no_export_protocols"
                "-node"
                node
                fichier)
@@ -167,6 +170,7 @@
          :buffer prelude-compil-buffer-name
          :command
          (list prelude-compiler-name
+               "-no_export_protocols"
                "-node"
                node
                "-print_clocks"
@@ -199,6 +203,7 @@
         (start-process "prelude-compilation"
                        prelude-compil-buffer-name
                        prelude-compiler-name
+                       "-no_export_protocols"
                        "-node"
                        node
                        "-print_deadlines"
@@ -270,7 +275,7 @@
       '(("--.*$" . font-lock-comment-face)
         ("(\\*\\(.\\|\n\\)*?\\*)" . font-lock-comment-face)
         ("node *\\([a-zA-Z0-9_-]*\\) *(" 1 prelude-font-lock-governing-face nil nil)
-        ("\\<\\(const\\|sensor\\|imported\\|actuator\\|wcet\\|stack\\|let\\|node\\|returns\\|req\\|tel\\|type\\|due\\|before\\|rate\\|var\\)\\>" 1 font-lock-keyword-face nil nil)
+        ("\\<\\(const\\|sensor\\|imported\\|actuator\\|wcet\\|stack\\|let\\|node\\|returns\\|req\\|tel\\|type\\|due\\|before\\|rate\\|var\\|automaton\\|end\\)\\>" 1 font-lock-keyword-face nil nil)
         ("\\<\\(node\\|let\\|tel\\)\\>[ \t\n]" 1 prelude-font-lock-multistage-face nil nil)
         ("\\<\\(true\\|and\\|fby\\|merge\\|tail\\|when\\|whennot\\|false\\)\\>" . font-lock-reference-face)
         ("\\(\\(/\\|\\*\\)^\\|::\\)" . font-lock-reference-face)
@@ -313,23 +318,16 @@
     result))
 
 
-(defun electric-prelude-special-char ()
-  "Insert a space after ',' or ':' ."
-  (interactive)
-  (insert last-command-char)
-  (insert " "))
-
-(defun electric-prelude-special-op ()
-  "Insert before and after binop"
-  (interactive)
-  (insert " ")
-  (insert last-command-char)
-  (insert " "))
-
 (defun electric-prelude-end-of-line ()
   "Insert a newline."
   (interactive)
-  (newline))
+  (let ((is-comment (prelude-line-is-comment)))
+    (electric-prelude-tab)
+    (newline)
+    (when is-comment
+      (electric-prelude-tab)
+      (insert "-- "))
+    (electric-prelude-tab)))
 
 (defun electric-prelude-tab ()
   "Indent current line ."
