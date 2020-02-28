@@ -195,6 +195,7 @@ Currently only disables tool-bar in graphical mode."
 ;; Language settings
 ;; Language Server Protocol (LSP)
 (add-hook 'prog-mode-hook #'lsp)
+(add-hook 'prog-mode-hook #'yas-minor-mode)
 
 ;; Ocaml
 (defun set-merlin-keys ()
@@ -218,6 +219,7 @@ Currently only disables tool-bar in graphical mode."
 
 ;; C/C++
 (add-hook 'c++-mode-hook 'company-mode)
+(add-hook 'after-init-hook (lambda() (require 'ccls)))
 (add-hook 'c-mode-hook 'company-mode)
 (add-hook 'c-mode-hook 'hide-ifdef-mode)
 (add-hook 'hide-ifdef-mode-hook 'hide-ifdefs)
@@ -316,6 +318,7 @@ Currently only disables tool-bar in graphical mode."
  '(TeX-master nil)
  '(c-basic-offset 2)
  '(c-default-style "bsd")
+ '(ccls-executable "/usr/bin/ccls")
  '(company-minimum-prefix-length 0)
  '(lua-indent-level 2)
  '(org-export-show-temporary-export-buffer nil)
@@ -328,7 +331,7 @@ Currently only disables tool-bar in graphical mode."
  '(org-support-shift-select (quote always))
  '(package-selected-packages
    (quote
-    (buttons graphviz-dot-mode lsp-mode tangotango-theme presentation csv-mode json-mode unfill merlin ocp-indent buffer-move auctex iasm-mode edit-server-htmlize edit-server tuareg projectile fold-this company yaml-mode smart-tab lua-mode browse-kill-ring)))
+    (flycheck company-lsp lsp-ui ccls yasnippet buttons graphviz-dot-mode tangotango-theme presentation csv-mode json-mode unfill merlin ocp-indent buffer-move auctex edit-server-htmlize edit-server tuareg projectile fold-this company yaml-mode smart-tab lua-mode browse-kill-ring)))
  '(python-indent-offset 2)
  '(safe-local-variable-values
    (quote
