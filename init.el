@@ -27,7 +27,7 @@
 (defun ffort-theme-configure-theme ()
   "Loads the theme using the variable theme"
   (load-theme theme t))
-(add-hook 'after-init-hook 'ffort-theme-configure-theme)
+(add-hook 'after-init-hook 'ffort-theme-configure-theme t)
 
 ;; Do not implicitly add newlines
 (setq next-line-add-newlines nil)
@@ -181,7 +181,7 @@ Currently only disables tool-bar in graphical mode."
 
 ;; Post-init hook
 (if (daemonp)
-    (add-hook 'after-init-hook 'sync-packages t))
+    (add-hook 'after-init-hook 'sync-packages))
 
 ;;compile file of optimization (?)
 ;;(defun byte-compile-if-newer-and-load (file)
@@ -219,7 +219,7 @@ Currently only disables tool-bar in graphical mode."
 
 ;; C/C++
 (add-hook 'c++-mode-hook 'company-mode)
-(add-hook 'after-init-hook (lambda() (require 'ccls)))
+(add-hook 'after-init-hook (lambda() (require 'ccls)) t)
 (add-hook 'c-mode-hook 'company-mode)
 (add-hook 'c-mode-hook 'hide-ifdef-mode)
 (add-hook 'hide-ifdef-mode-hook 'hide-ifdefs)
