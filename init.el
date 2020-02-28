@@ -12,7 +12,6 @@
     (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
 (package-initialize)
 
-
 ;; Set load path
 ;; Add ~/.emacs.d/site-lisp
 (add-to-list 'load-path
@@ -326,6 +325,7 @@ Currently only disables tool-bar in graphical mode."
                  ("begin" "$1" "$" "$$" "\\(" "\\["))))
  '(org-log-done :time)
  '(org-preview-latex-image-directory "/tmp/ltximg/")
+ '(org-support-shift-select (quote always))
  '(package-selected-packages
    (quote
     (buttons graphviz-dot-mode lsp-mode tangotango-theme presentation csv-mode json-mode unfill merlin ocp-indent buffer-move auctex iasm-mode edit-server-htmlize edit-server tuareg projectile fold-this company yaml-mode smart-tab lua-mode browse-kill-ring)))
