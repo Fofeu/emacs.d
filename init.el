@@ -194,7 +194,7 @@ Currently only disables tool-bar in graphical mode."
 
 ;; Language settings
 ;; Language Server Protocol (LSP)
-(add-hook 'prog-mode-hook #'lsp)
+(add-hook 'prog-mode-hook #'lsp-mode)
 (add-hook 'prog-mode-hook #'yas-minor-mode)
 
 ;; Ocaml
