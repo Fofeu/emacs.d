@@ -180,6 +180,11 @@ Currently only disables tool-bar in graphical mode."
 (global-set-key (kbd "C-c d b") 'ediff-buffers)
 (global-set-key (kbd "<insert>") nil)
 
+;; Disable commands
+;; scroll-left
+(global-set-key (kbd "<C-next>") nil)
+(global-set-key (kbd "C-x <") nil)
+
 ;; Post-init hook
 (if (daemonp)
     (add-hook 'after-init-hook 'sync-packages))
