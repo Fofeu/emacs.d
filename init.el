@@ -332,6 +332,7 @@ Currently only disables tool-bar in graphical mode."
    (quote
     (:foreground default :background default :scale 1.3 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
                  ("begin" "$1" "$" "$$" "\\(" "\\["))))
+ '(org-latex-packages-alist nil)
  '(org-log-done :time)
  '(org-preview-latex-image-directory "/tmp/ltximg/")
  '(org-support-shift-select (quote always))
