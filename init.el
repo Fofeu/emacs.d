@@ -155,6 +155,7 @@ Currently only disables tool-bar in graphical mode."
 ;; User keys
 (global-set-key (kbd "C-c r") 'reload-config)
 (global-set-key (kbd "C-c c r") 'comment-region)
+(global-set-key (kbd "C-c c l") 'comment-line)
 (global-set-key (kbd "C-c c u") 'uncomment-region)
 (global-set-key (kbd "C-c c c") 'open-config)
 (global-set-key (kbd "C-c 4 c") 'open-config-other-window)
