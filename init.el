@@ -184,6 +184,7 @@ Currently only disables tool-bar in graphical mode."
 ;; scroll-left
 (global-set-key (kbd "<C-next>") nil)
 (global-set-key (kbd "C-x <") nil)
+(global-set-key (kbd "C-t") nil)
 
 ;; Post-init hook
 (if (daemonp)
