@@ -155,6 +155,7 @@ Currently only disables tool-bar in graphical mode."
 ;; User keys
 (global-set-key (kbd "C-c r") 'reload-config)
 (global-set-key (kbd "C-c c r") 'comment-region)
+(global-set-key (kbd "C-c c l") 'comment-line)
 (global-set-key (kbd "C-c c u") 'uncomment-region)
 (global-set-key (kbd "C-c c c") 'open-config)
 (global-set-key (kbd "C-c 4 c") 'open-config-other-window)
@@ -179,6 +180,12 @@ Currently only disables tool-bar in graphical mode."
 (global-set-key (kbd "C-c d b") 'ediff-buffers)
 (global-set-key (kbd "<insert>") nil)
 
+;; Disable commands
+;; scroll-left
+(global-set-key (kbd "<C-next>") nil)
+(global-set-key (kbd "C-x <") nil)
+(global-set-key (kbd "C-t") nil)
+
 ;; Post-init hook
 (if (daemonp)
     (add-hook 'after-init-hook 'sync-packages))
@@ -194,7 +201,7 @@ Currently only disables tool-bar in graphical mode."
 
 ;; Language settings
 ;; Language Server Protocol (LSP)
-(add-hook 'prog-mode-hook #'lsp)
+(add-hook 'prog-mode-hook #'lsp-mode)
 (add-hook 'prog-mode-hook #'yas-minor-mode)
 
 ;; Ocaml
