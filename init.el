@@ -203,6 +203,7 @@ Currently only disables tool-bar in graphical mode."
 ;; Language settings
 ;; Language Server Protocol (LSP)
 (add-hook 'prog-mode-hook #'lsp-mode)
+(add-hook 'prog-mode-hook #'lsp)
 (add-hook 'prog-mode-hook #'yas-minor-mode)
 
 ;; Ocaml
@@ -226,11 +227,11 @@ Currently only disables tool-bar in graphical mode."
     (add-hook 'merlin-mode-hook 'set-merlin-keys t)))
 
 ;; C/C++
-(add-hook 'c++-mode-hook 'company-mode)
-(add-hook 'after-init-hook (lambda() (require 'ccls)) t)
-(add-hook 'c-mode-hook 'company-mode)
-(add-hook 'c-mode-hook 'hide-ifdef-mode)
-(add-hook 'hide-ifdef-mode-hook 'hide-ifdefs)
+;;(add-hook 'c++-mode-hook 'company-mode)
+(require 'ccls)
+;;(add-hook 'c-mode-hook 'company-mode)
+;;(add-hook 'c-mode-hook 'hide-ifdef-mode)
+;;(add-hook 'hide-ifdef-mode-hook 'hide-ifdefs)
 
 ;; Python
 (add-hook 'python-mode-hook
@@ -325,9 +326,14 @@ Currently only disables tool-bar in graphical mode."
  ;; If there is more than one, they won't work right.
  '(TeX-master nil)
  '(c-basic-offset 2)
- '(c-default-style "bsd")
+ '(c-default-style
+   '((c-mode . "bsd")
+     (c++-mode . "bsd")
+     (java-mode . "java")
+     (awk-mode . "awk")
+     (other . "bsd")))
  '(ccls-executable "/usr/bin/ccls")
- '(company-minimum-prefix-length 0)
+ '(company-minimum-prefix-length 1)
  '(lua-indent-level 2)
  '(org-export-show-temporary-export-buffer nil)
  '(org-format-latex-options
