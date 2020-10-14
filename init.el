@@ -338,8 +338,7 @@ Currently only disables tool-bar in graphical mode."
  '(org-preview-latex-image-directory "/tmp/ltximg/")
  '(org-support-shift-select (quote always))
  '(package-selected-packages
-   (quote
-    (cmake-mode cargo flycheck company-lsp lsp-ui ccls yasnippet buttons graphviz-dot-mode tangotango-theme presentation csv-mode json-mode unfill merlin ocp-indent buffer-move auctex edit-server-htmlize edit-server tuareg projectile fold-this company yaml-mode smart-tab lua-mode browse-kill-ring)))
+   '(undo-tree z3-mode cmake-mode cargo company-lsp lsp-ui ccls yasnippet buttons graphviz-dot-mode tangotango-theme presentation csv-mode json-mode unfill merlin ocp-indent buffer-move auctex edit-server-htmlize edit-server tuareg projectile fold-this company yaml-mode smart-tab lua-mode browse-kill-ring))
  '(python-indent-offset 2)
  '(safe-local-variable-values
    (quote
