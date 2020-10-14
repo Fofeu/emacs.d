@@ -337,20 +337,18 @@ Currently only disables tool-bar in graphical mode."
  '(lua-indent-level 2)
  '(org-export-show-temporary-export-buffer nil)
  '(org-format-latex-options
-   (quote
-    (:foreground default :background default :scale 1.3 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
-                 ("begin" "$1" "$" "$$" "\\(" "\\["))))
- '(org-latex-packages-alist (quote (("" "dsfont" t))))
+   '(:foreground default :background default :scale 1.3 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
+                 ("begin" "$1" "$" "$$" "\\(" "\\[")))
+ '(org-latex-packages-alist '(("" "dsfont" t)))
  '(org-log-done :time)
  '(org-preview-latex-image-directory "/tmp/ltximg/")
- '(org-support-shift-select (quote always))
+ '(org-support-shift-select 'always)
  '(package-selected-packages
    '(undo-tree z3-mode cmake-mode cargo company-lsp lsp-ui ccls yasnippet buttons graphviz-dot-mode tangotango-theme presentation csv-mode json-mode unfill merlin ocp-indent buffer-move auctex edit-server-htmlize edit-server tuareg projectile fold-this company yaml-mode smart-tab lua-mode browse-kill-ring))
  '(python-indent-offset 2)
  '(safe-local-variable-values
-   (quote
-    ((TeX-command-extra-options . "-shell-escape")
-     (TeX-master . "main")))))
+   '((TeX-command-extra-options . "-shell-escape")
+     (TeX-master . "main")))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
