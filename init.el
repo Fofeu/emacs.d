@@ -349,6 +349,7 @@ Currently only disables tool-bar in graphical mode."
  '(safe-local-variable-values
    '((TeX-command-extra-options . "-shell-escape")
      (TeX-master . "main")))
+ '(z3-solver-cmd "/usr/bin/z3"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
