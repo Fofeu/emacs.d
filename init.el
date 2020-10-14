@@ -159,7 +159,7 @@ Currently only disables tool-bar in graphical mode."
 (global-set-key (kbd "C-c c u") 'uncomment-region)
 (global-set-key (kbd "C-c c c") 'open-config)
 (global-set-key (kbd "C-c 4 c") 'open-config-other-window)
-(global-set-key (kbd "C-c l") 'revert-buffer-no-confirm)
+;;(global-set-key (kbd "C-c l") 'revert-buffer-no-confirm)
 (global-set-key (kbd "C-c k") 'kill-current-buffer)
 (global-set-key (kbd "C-c y") 'browse-kill-ring)
 ;;(global-set-key (kbd "C-c s") 'mode-skeleton)
@@ -185,6 +185,7 @@ Currently only disables tool-bar in graphical mode."
 (global-set-key (kbd "<C-next>") nil)
 (global-set-key (kbd "C-x <") nil)
 (global-set-key (kbd "C-t") nil)
+(global-set-key (kbd "<menu>") nil)
 
 ;; Post-init hook
 (if (daemonp)
