@@ -29,44 +29,6 @@
   (load-theme theme t))
 (add-hook 'after-init-hook 'ffort-theme-configure-theme t)
 
-;; Do not implicitly add newlines
-(setq next-line-add-newlines nil)
-
-;; No backup files plz
-(setq make-backup-files nil)
-(setq auto-save-default nil)
-
-;; Do not show the startup-screen
-(setq inhibit-startup-screen t)
-
-;; Scratch-pad has no initial text + fundamental-mode
-(setq initial-scratch-message "")
-(setq initial-major-mode 'text-mode)
-
-;; Highlight matching parenthesis
-(show-paren-mode 1)
-
-;; Show line and column numbers
-(global-linum-mode t)
-(setq column-number-mode t)
-
-;; Prettier line wrap
-(global-visual-line-mode 1)
-
-;; set indentation
-(setq-default tab-width 2)
-(setq-default indent-tabs-mode nil)
-
-;; Frame setup
-(defun frame-setup (&optional frame)
-  "Function callend when frame is configured.
-Currently only disables tool-bar in graphical mode."
-  (when (display-graphic-p frame)
-    (tool-bar-mode -1)))
-
-(mapc 'frame-setup (frame-list))
-(add-hook 'after-make-frame-functions 'frame-setup)
-
 ;; Cut trailling whitespace on save
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
@@ -325,6 +287,7 @@ Currently only disables tool-bar in graphical mode."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(TeX-master nil)
+ '(auto-save-default nil)
  '(c-basic-offset 2)
  '(c-default-style
    '((c-mode . "bsd")
@@ -333,8 +296,17 @@ Currently only disables tool-bar in graphical mode."
      (awk-mode . "awk")
      (other . "bsd")))
  '(ccls-executable "/usr/bin/ccls")
+ '(column-number-mode t)
  '(company-minimum-prefix-length 1)
+ '(global-linum-mode t)
+ '(global-visual-line-mode t)
+ '(indent-tabs-mode nil)
+ '(inhibit-startup-screen t)
+ '(initial-major-mode 'text-mode)
+ '(initial-scratch-message "")
  '(lua-indent-level 2)
+ '(make-backup-files nil)
+ '(next-line-add-newlines nil)
  '(org-export-show-temporary-export-buffer nil)
  '(org-format-latex-options
    '(:foreground default :background default :scale 1.3 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
@@ -349,6 +321,9 @@ Currently only disables tool-bar in graphical mode."
  '(safe-local-variable-values
    '((TeX-command-extra-options . "-shell-escape")
      (TeX-master . "main")))
+ '(show-paren-mode t)
+ '(tab-width 2)
+ '(tool-bar-mode nil)
  '(z3-solver-cmd "/usr/bin/z3"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
