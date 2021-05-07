@@ -199,6 +199,9 @@
 (add-hook 'python-mode-hook
           (lambda ()
             (untabify (point-min) (point-max))))
+(add-hook 'python-mode-hook 'auto-virtualenv-set-virtualenv)
+(add-hook 'window-configuration-change-hook 'auto-virtualenv-set-virtualenv)
+(add-hook 'focus-in-hook 'auto-virtualenv-set-virtualenv)
 
 ;; Prelude
 (setq auto-mode-alist (cons '("\\.plu$" . prelude-mode) auto-mode-alist))
@@ -314,7 +317,7 @@
  '(org-preview-latex-image-directory "/tmp/ltximg/")
  '(org-support-shift-select 'always)
  '(package-selected-packages
-   '(undo-tree z3-mode cmake-mode cargo lsp-ui ccls yasnippet buttons graphviz-dot-mode tangotango-theme presentation csv-mode json-mode unfill merlin ocp-indent buffer-move auctex edit-server-htmlize edit-server tuareg projectile fold-this company yaml-mode smart-tab lua-mode browse-kill-ring))
+   '(auto-virtualenv undo-tree z3-mode cmake-mode cargo lsp-ui ccls yasnippet buttons graphviz-dot-mode tangotango-theme presentation csv-mode json-mode unfill merlin ocp-indent buffer-move auctex edit-server-htmlize edit-server tuareg projectile fold-this company yaml-mode smart-tab lua-mode browse-kill-ring))
  '(python-indent-offset 2)
  '(safe-local-variable-values
    '((TeX-command-extra-options . "-shell-escape")
