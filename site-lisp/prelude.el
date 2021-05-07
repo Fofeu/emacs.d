@@ -275,7 +275,7 @@
       '(("--.*$" . font-lock-comment-face)
         ("(\\*\\(.\\|\n\\)*?\\*)" . font-lock-comment-face)
         ("node *\\([a-zA-Z0-9_-]*\\) *(" 1 prelude-font-lock-governing-face nil nil)
-        ("\\<\\(const\\|sensor\\|imported\\|actuator\\|wcet\\|stack\\|let\\|node\\|returns\\|req\\|tel\\|type\\|due\\|before\\|rate\\|var\\|automaton\\|end\\)\\>" 1 font-lock-keyword-face nil nil)
+        ("\\<\\(const\\|sensor\\|imported\\|actuator\\|wcet\\|stack\\|let\\|node\\|returns\\|tel\\|type\\|due\\|before\\|rate\\|var\\|automaton\\|end\\)\\>" 1 font-lock-keyword-face nil nil)
         ("\\<\\(node\\|let\\|tel\\)\\>[ \t\n]" 1 prelude-font-lock-multistage-face nil nil)
         ("\\<\\(true\\|and\\|fby\\|merge\\|tail\\|when\\|whennot\\|false\\)\\>" . font-lock-reference-face)
         ("\\(\\(/\\|\\*\\)^\\|::\\)" . font-lock-reference-face)
