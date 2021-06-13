@@ -180,11 +180,11 @@
     (add-to-list 'exec-path opam-bin)
     (require 'ocp-indent)
     (autoload 'merlin-mode "merlin" nil t nil)
-    (autoload 'merlin-company-backend "merlin" nil t nil)
+    ;;(autoload 'merlin-company-backend "merlin" nil t nil)
     (add-hook 'tuareg-mode-hook 'merlin-mode t)
     (add-hook 'caml-mode-hook 'merlin-mode t)
-    (with-eval-after-load 'company
-      (add-to-list 'company-backends 'merlin-company-backend))
+    ;;(with-eval-after-load 'company
+      ;;(add-to-list 'company-backends 'merlin-company-backend))
     (add-hook 'merlin-mode-hook 'company-mode t)
     (add-hook 'merlin-mode-hook 'set-merlin-keys t)))
 
