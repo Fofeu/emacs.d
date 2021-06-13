@@ -178,11 +178,11 @@
     (add-to-list 'exec-path opam-bin)
     (require 'ocp-indent)
     (autoload 'merlin-mode "merlin" nil t nil)
-    (autoload 'merlin-company-backend "merlin" nil t nil)
+    ;;(autoload 'merlin-company-backend "merlin" nil t nil)
     (add-hook 'tuareg-mode-hook 'merlin-mode t)
     (add-hook 'caml-mode-hook 'merlin-mode t)
-    (with-eval-after-load 'company
-      (add-to-list 'company-backends 'merlin-company-backend))
+    ;;(with-eval-after-load 'company
+      ;;(add-to-list 'company-backends 'merlin-company-backend))
     (add-hook 'merlin-mode-hook 'company-mode t)
     (add-hook 'merlin-mode-hook 'set-merlin-keys t)))
 
@@ -278,6 +278,11 @@
 
 (add-hook 'html-mode-hook 'render-html-inplace)
 
+;; Haskell (Agda too)
+(let ((haskell-bin-path (concat (getenv "HOME") "/.cabal/bin")))
+  (when (file-directory-p haskell-bin-path)
+    (add-to-list 'exec-path haskell-bin-path)))
+
 ;; Custom variables
 
 (custom-set-variables
@@ -315,7 +320,7 @@
  '(org-preview-latex-image-directory "/tmp/ltximg/")
  '(org-support-shift-select 'always)
  '(package-selected-packages
-   '(auto-virtualenv undo-tree z3-mode cmake-mode cargo lsp-ui ccls yasnippet buttons graphviz-dot-mode tangotango-theme presentation csv-mode json-mode unfill merlin ocp-indent buffer-move auctex edit-server-htmlize edit-server tuareg projectile fold-this company yaml-mode smart-tab lua-mode browse-kill-ring))
+   '(bison-mode agda2-mode auto-virtualenv undo-tree z3-mode cmake-mode cargo lsp-ui ccls yasnippet buttons graphviz-dot-mode tangotango-theme presentation csv-mode json-mode unfill merlin ocp-indent buffer-move auctex edit-server-htmlize edit-server tuareg projectile fold-this company yaml-mode smart-tab lua-mode browse-kill-ring))
  '(python-indent-offset 2)
  '(safe-local-variable-values
    '((TeX-command-extra-options . "-shell-escape")
