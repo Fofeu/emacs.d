@@ -280,6 +280,11 @@
 
 (add-hook 'html-mode-hook 'render-html-inplace)
 
+;; Haskell (Agda too)
+(let ((haskell-bin-path (concat (getenv "HOME") "/.cabal/bin")))
+  (when (file-directory-p haskell-bin-path)
+    (add-to-list 'exec-path haskell-bin-path)))
+
 ;; Custom variables
 
 (custom-set-variables
