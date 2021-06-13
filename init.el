@@ -61,9 +61,7 @@
 (defun kill-current-buffer ()
   "Kill current buffer, if it is unmodified"
   (interactive)
-  (if (string= (buffer-name) "*scratch*")
-      (message "Cannot kill scratch buffer")
-    (kill-buffer)))
+    (kill-buffer))
 
 (defun open-config ()
   "Open the emacs configuration file"
