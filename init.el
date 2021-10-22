@@ -29,24 +29,9 @@
   (load-theme theme t))
 (add-hook 'after-init-hook 'ffort-theme-configure-theme t)
 
-;; Cut trailling whitespace on save
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-;; Delete selection when typing
-(delete-selection-mode 1)
-
-;; Mouse support in terminal
-(xterm-mouse-mode 1)
-
-;; Reload buffer when they have been modified on disk
-(global-auto-revert-mode t)
-
 ;; Allow to restore window configurations
 ;; Disabled for now
 ;; (winner-mode 1)
-
-;; Window focus follows mouse
-(setq mouse-autoselect-window t)
 
 (defun reload-config ()
   "Reload configuration file"
@@ -292,6 +277,7 @@
  ;; If there is more than one, they won't work right.
  '(TeX-master nil)
  '(auto-save-default nil)
+ '(before-save-hook '(delete-trailing-whitespace))
  '(c-basic-offset 2)
  '(c-default-style
    '((c-mode . "bsd")
@@ -302,6 +288,8 @@
  '(ccls-executable "/usr/bin/ccls")
  '(column-number-mode t)
  '(company-minimum-prefix-length 1)
+ '(delete-selection-mode t)
+ '(global-auto-revert-mode t)
  '(global-linum-mode t)
  '(global-visual-line-mode t)
  '(indent-tabs-mode nil)
@@ -310,6 +298,7 @@
  '(initial-scratch-message "")
  '(lua-indent-level 2)
  '(make-backup-files nil)
+ '(mouse-autoselect-window t)
  '(next-line-add-newlines nil)
  '(org-export-show-temporary-export-buffer nil)
  '(org-format-latex-options
@@ -328,6 +317,7 @@
  '(show-paren-mode t)
  '(tab-width 2)
  '(tool-bar-mode nil)
+ '(xterm-mouse-mode t)
  '(z3-solver-cmd "/usr/bin/z3"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
