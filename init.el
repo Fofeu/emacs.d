@@ -158,16 +158,14 @@
     (define-key merlin-mode-map (kbd "C-c &") nil)
     (define-key merlin-mode-map (kbd "C-c p") 'merlin-pop-stack)))
 
-(let ((opam-bin (ignore-errors (car (process-lines "opam" "config" "var" "bin")))))
+(let ((opam-bin (ignore-errors (car (process-lines "opam" "var" "bin")))))
   (when (and opam-bin (file-directory-p opam-bin))
     (add-to-list 'exec-path opam-bin)
     (require 'ocp-indent)
     (autoload 'merlin-mode "merlin" nil t nil)
-    ;;(autoload 'merlin-company-backend "merlin" nil t nil)
     (add-hook 'tuareg-mode-hook 'merlin-mode t)
     (add-hook 'caml-mode-hook 'merlin-mode t)
-    ;;(with-eval-after-load 'company
-      ;;(add-to-list 'company-backends 'merlin-company-backend))
+    (require 'merlin-company)
     (add-hook 'merlin-mode-hook 'company-mode t)
     (add-hook 'merlin-mode-hook 'set-merlin-keys t)))
 
