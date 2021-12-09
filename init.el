@@ -81,12 +81,11 @@
     (let ((archive-pkg (car (cdr (assoc pkg package-archive-contents)))))
       (cond
        ((null archive-pkg)
-        (lwarn :warning "Package %s is not available in the archive"))
+        (lwarn :warning "Package %s is not available in the archive" (type-of archive-pkg)))
        ((package-desc-p archive-pkg)
         (let ((local-pkg (car (cdr (assoc pkg package-alist)))))
           (cond
-          x ((null local-pkg)
-            (package-install pkg))
+           ((null local-pkg) (package-install pkg))
            ((version-list-< (package-desc-version local-pkg)
                             (package-desc-version archive-pkg))
             (package-reinstall pkg)))))
