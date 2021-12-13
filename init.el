@@ -137,8 +137,9 @@
 (global-set-key (kbd "<menu>") nil)
 
 ;; Post-init hook
-(if (daemonp)
-    (add-hook 'after-init-hook 'sync-packages))
+;; Removed for now, MELPA (?) is broken (?)
+;; (if (daemonp)
+;;     (add-hook 'after-init-hook 'sync-packages))
 
 ;;compile file of optimization (?)
 ;;(defun byte-compile-if-newer-and-load (file)
