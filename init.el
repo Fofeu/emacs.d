@@ -19,9 +19,10 @@
              (concat user-emacs-directory "/site-lisp"))
 
 ;; Launch edit-server in daemon mode
-(when (and (daemonp) (locate-library "edit-server"))
-  (setq edit-server-new-frame nil)
-  (edit-server-start))
+;; Disabled, rarely used currently
+;; (when (and (daemonp) (locate-library "edit-server"))
+;;   (setq edit-server-new-frame nil)
+;;   (edit-server-start))
 
 ;; Theme configuration
 (defvar theme 'tangotango "The current theme")
