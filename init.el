@@ -218,6 +218,12 @@
   (add-to-list 'TeX-view-program-selection
                '(output-pdf "Zathura")))
 
+(use-package lsp-ltex
+  :ensure t
+  :hook (text-mode . (lambda ()
+                       (require 'lsp-ltex)
+                       (lsp))))  ; or lsp-deferred
+
 (define-skeleton latex-skeleton
   "Inserts a Latex skelleton with average settings"
 
@@ -285,6 +291,22 @@
 (let ((haskell-bin-path (concat (getenv "HOME") "/.cabal/bin")))
   (when (file-directory-p haskell-bin-path)
     (add-to-list 'exec-path haskell-bin-path)))
+
+(require 'noflet)
+
+(defadvice compilation-start
+  (around inhibit-display
+          (command &optional mode name-function highlight-regexp))
+  (noflet ((display-buffer (buffer-or-name &optional action frame))
+           (set-window-point (window pos))
+           (goto-char (position)))
+    (fset 'display-buffer 'ignore)
+    (fset 'goto-char 'ignore)
+    (fset 'set-window-point 'ignore)
+    (save-window-excursion
+      ad-do-it)))
+
+(ad-activate 'compilation-start)
 
 ;; Custom variables
 
@@ -386,6 +408,8 @@
  '(inhibit-startup-screen t)
  '(initial-major-mode 'text-mode)
  '(initial-scratch-message "")
+ '(lsp-keymap-prefix "C-c l")
+ '(lsp-ltex-version "15.2.0-linux-x64")
  '(lua-indent-level 2)
  '(make-backup-files nil)
  '(mouse-autoselect-window t)
