@@ -48,7 +48,7 @@
 (defun kill-current-buffer ()
   "Kill current buffer, if it is unmodified"
   (interactive)
-    (kill-buffer))
+  (kill-buffer))
 
 (defun open-config ()
   "Open the emacs configuration file"
@@ -281,7 +281,7 @@
        (with-current-buffer srcbuf
          (libxml-parse-html-region (point-min) (point-max))))
       )
-      ;;(switch-to-buffer dstbuf)
+    ;;(switch-to-buffer dstbuf)
     )
   )
 
