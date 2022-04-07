@@ -83,15 +83,28 @@
     (let ((archive-pkg (car (cdr (assoc pkg package-archive-contents)))))
       (cond
        ((null archive-pkg)
-        (lwarn :warning "Package %s is not available in the archive" (type-of archive-pkg)))
+        (lwarn :warning "Package %s is not available in the archive" pkg))
+
        ((package-desc-p archive-pkg)
-        (let ((local-pkg (car (cdr (assoc pkg package-alist)))))
+        (let ((local-pkg (car (cdr (assoc pkg package-alist))))
+              (pkg-name (package-desc-full-name archive-pkg)))
           (cond
            ((null local-pkg) (package-install pkg))
            ((version-list-< (package-desc-version local-pkg)
                             (package-desc-version archive-pkg))
-            (package-reinstall pkg)))))
-       ((lwarn :warning "Archive returned a non-package for %s"))))))
+            (package-reinstall pkg))
+           ((version-list-= (package-desc-version local-pkg)
+                            (package-desc-version archive-pkg))
+            (lwarn :debug "Package %s is up-to-date" pkg-name))
+           (t (lwarn :debug "Package %s is neither up-to-date nor too old" pkg-name))
+           )
+          )
+        )
+
+
+       (t (message "%s is not a package but a %s" pkg (symbol-name (type-of pkg))))
+       )
+      )))
 
 (defun exit-emacs-sensibly ()
   (interactive)
