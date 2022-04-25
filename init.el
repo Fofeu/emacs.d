@@ -18,11 +18,6 @@
 (add-to-list 'load-path
              (concat user-emacs-directory "/site-lisp"))
 
-(defcustom ffort-last-sync
-  (encode-time (decode-time 0))
-  "Last time a sync was performed"
-  :type 'sexp)
-
 ;; Launch edit-server in daemon mode
 ;; Disabled, rarely used currently
 ;; (when (and (daemonp) (locate-library "edit-server"))
@@ -80,7 +75,24 @@
     (other-window 2)))
 
 ;; Sync packages
-(defun ffort-sync-packages ()
+(require 'f)
+(defcustom ffort-sync-last-filename
+  "last-sync"
+  "Path to the file storing the date of the last sync"
+  :type 'string)
+
+(defun ffort-sync-last-path ()
+  (expand-file-name (concat "./" ffort-sync-last-filename) user-emacs-directory))
+
+(defun ffort-sync-write-last ()
+  (f-write-text (format "%s" (current-time)) 'utf-8 (ffort-sync-last-path)))
+
+(defun ffort-sync-read-last ()
+  (condition-case nil
+      (time-convert (read (f-read-text (ffort-sync-last-path))))
+      (error '(0 0))))
+
+(defun ffort-sync ()
   (interactive)
   (package-refresh-contents)
   (dolist (pkg package-selected-packages)
@@ -104,17 +116,15 @@
            )
           )
         )
-
-
        (t (message "%s is not a package but a %s" pkg (symbol-name (type-of pkg))))
        )
       )))
 
-(defun ffort-sync-packages-trigger ()
+(defun ffort-sync-trigger ()
   (require 'time-date)
-  (when (> (time-to-number-of-days (time-since ffort-last-sync)) 1)
-    (ffort-sync-packages)
-    (customize-save-variable 'ffort-last-sync (current-time))
+  (when (> (time-to-number-of-days (time-since (ffort-sync-read-last))) 1)
+    (ffort-sync)
+    (ffort-sync-write-last)
     ))
 
 (defun exit-emacs-sensibly ()
@@ -321,7 +331,7 @@
 
 
 ;; Hooks
-(add-hook 'after-init-hook 'ffort-sync-packages-trigger 0)
+(add-hook 'after-init-hook 'ffort-sync-trigger 0)
 (add-hook 'after-init-hook 'ffort-theme-configure-theme 10)
 (add-hook 'after-init-hook 'setup-merlin 20)
 (add-hook 'after-init-hook 'setup-ccls 20)
@@ -422,7 +432,7 @@
  '(column-number-mode t)
  '(company-minimum-prefix-length 1)
  '(delete-selection-mode t)
- '(ffort-last-sync '(25190 22724 789137 685000))
+ '(ffort-last-sync "last-sync")
  '(global-auto-revert-mode t)
  '(global-linum-mode t)
  '(global-visual-line-mode t)
