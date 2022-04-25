@@ -110,8 +110,8 @@
        )
       )))
 
-(require 'time-date)
 (defun ffort-sync-packages-trigger ()
+  (require 'time-date)
   (when (> (time-to-number-of-days (time-since ffort-last-sync)) 1)
     (ffort-sync-packages)
     (customize-save-variable 'ffort-last-sync (current-time))
