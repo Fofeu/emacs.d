@@ -237,11 +237,13 @@
                '(output-pdf "Zathura")))
 
 (defun setup-lsp-ltex ()
-  (use-package lsp-ltex
-	       :ensure t
-	       :hook (text-mode . (lambda ()
-				    (require 'lsp-ltex)
-				    (lsp))))  ; or lsp-deferred)
+  ;; (use-package lsp-ltex
+	;;        :ensure t
+	;;        :hook (text-mode . (lambda ()
+	;; 			    (require 'lsp-ltex)
+	;; 			    (lsp))))  ; or lsp-deferred)
+  (require 'lsp-ltex)
+  (lsp)
   )
 (define-skeleton latex-skeleton
   "Inserts a Latex skelleton with average settings"
