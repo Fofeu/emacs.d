@@ -18,6 +18,11 @@
 (add-to-list 'load-path
              (concat user-emacs-directory "/site-lisp"))
 
+(defcustom ffort-last-sync
+  (encode-time (decode-time 0))
+  "Last time a sync was performed"
+  :type 'sexp)
+
 ;; Launch edit-server in daemon mode
 ;; Disabled, rarely used currently
 ;; (when (and (daemonp) (locate-library "edit-server"))
@@ -29,7 +34,6 @@
 (defun ffort-theme-configure-theme ()
   "Loads the theme using the variable theme"
   (load-theme theme t))
-(add-hook 'after-init-hook 'ffort-theme-configure-theme t)
 
 ;; Allow to restore window configurations
 ;; Disabled for now
@@ -76,7 +80,7 @@
     (other-window 2)))
 
 ;; Sync packages
-(defun sync-packages ()
+(defun ffort-sync-packages ()
   (interactive)
   (package-refresh-contents)
   (dolist (pkg package-selected-packages)
@@ -105,6 +109,13 @@
        (t (message "%s is not a package but a %s" pkg (symbol-name (type-of pkg))))
        )
       )))
+
+(require 'time-date)
+(defun ffort-sync-packages-trigger ()
+  (when (> (time-to-number-of-days (time-since ffort-last-sync)) 1)
+    (ffort-sync-packages)
+    (customize-save-variable 'ffort-last-sync (current-time))
+    ))
 
 (defun exit-emacs-sensibly ()
   (interactive)
@@ -151,11 +162,6 @@
 (global-set-key (kbd "C-t") nil)
 (global-set-key (kbd "<menu>") nil)
 
-;; Post-init hook
-;; Removed for now, MELPA (?) is broken (?)
-;; (if (daemonp)
-;;     (add-hook 'after-init-hook 'sync-packages))
-
 ;;compile file of optimization (?)
 ;;(defun byte-compile-if-newer-and-load (file)
 ;;   "Byte compile file.el if newer than file.elc"
@@ -167,8 +173,9 @@
 
 ;; Language settings
 ;; Language Server Protocol (LSP)
-(add-hook 'prog-mode-hook #'lsp-mode)
-(add-hook 'prog-mode-hook #'lsp)
+;; (add-hook 'prog-mode-hook #'lsp-mode)
+;; (add-hook 'prog-mode-hook #'lsp)
+(add-hook 'ocaml-mode-hook #'lsp)
 (add-hook 'prog-mode-hook #'yas-minor-mode)
 
 ;; Ocaml
@@ -178,20 +185,21 @@
     (define-key merlin-mode-map (kbd "C-c &") nil)
     (define-key merlin-mode-map (kbd "C-c p") 'merlin-pop-stack)))
 
-(let ((opam-bin (ignore-errors (car (process-lines "opam" "var" "bin")))))
-  (when (and opam-bin (file-directory-p opam-bin))
-    (add-to-list 'exec-path opam-bin)
-    (require 'ocp-indent)
-    (autoload 'merlin-mode "merlin" nil t nil)
-    (add-hook 'tuareg-mode-hook 'merlin-mode t)
-    (add-hook 'caml-mode-hook 'merlin-mode t)
-    (require 'merlin-company)
-    (add-hook 'merlin-mode-hook 'company-mode t)
-    (add-hook 'merlin-mode-hook 'set-merlin-keys t)))
+(defun setup-merlin ()
+  (let ((opam-bin (ignore-errors (car (process-lines "opam" "var" "bin")))))
+    (when (and opam-bin (file-directory-p opam-bin))
+      (add-to-list 'exec-path opam-bin)
+      (require 'ocp-indent)
+      (autoload 'merlin-mode "merlin" nil t nil)
+      (add-hook 'tuareg-mode-hook 'merlin-mode t)
+      (add-hook 'caml-mode-hook 'merlin-mode t)
+      (require 'merlin-company)
+      (add-hook 'merlin-mode-hook 'company-mode t)
+      (add-hook 'merlin-mode-hook 'set-merlin-keys t))))
 
 ;; C/C++
 ;;(add-hook 'c++-mode-hook 'company-mode)
-(require 'ccls)
+(defun setup-ccls () (require 'ccls))
 ;;(add-hook 'c-mode-hook 'company-mode)
 ;;(add-hook 'c-mode-hook 'hide-ifdef-mode)
 ;;(add-hook 'hide-ifdef-mode-hook 'hide-ifdefs)
@@ -200,9 +208,9 @@
 (add-hook 'python-mode-hook
           (lambda ()
             (untabify (point-min) (point-max))))
-(add-hook 'python-mode-hook 'auto-virtualenv-set-virtualenv)
-(add-hook 'window-configuration-change-hook 'auto-virtualenv-set-virtualenv)
-(add-hook 'focus-in-hook 'auto-virtualenv-set-virtualenv)
+;(add-hook 'python-mode-hook 'auto-virtualenv-set-virtualenv)
+;(add-hook 'window-configuration-change-hook 'auto-virtualenv-set-virtualenv)
+;(add-hook 'focus-in-hook 'auto-virtualenv-set-virtualenv)
 
 ;; Prelude
 (setq auto-mode-alist (cons '("\\.plu$" . prelude-mode) auto-mode-alist))
@@ -218,12 +226,13 @@
   (add-to-list 'TeX-view-program-selection
                '(output-pdf "Zathura")))
 
-(use-package lsp-ltex
-  :ensure t
-  :hook (text-mode . (lambda ()
-                       (require 'lsp-ltex)
-                       (lsp))))  ; or lsp-deferred
-
+(defun setup-lsp-ltex ()
+  (use-package lsp-ltex
+	       :ensure t
+	       :hook (text-mode . (lambda ()
+				    (require 'lsp-ltex)
+				    (lsp))))  ; or lsp-deferred)
+  )
 (define-skeleton latex-skeleton
   "Inserts a Latex skelleton with average settings"
 
@@ -292,21 +301,33 @@
   (when (file-directory-p haskell-bin-path)
     (add-to-list 'exec-path haskell-bin-path)))
 
-(require 'noflet)
+(defun setup-compilation-advice ()
+  (require 'noflet)
 
-(defadvice compilation-start
-  (around inhibit-display
-          (command &optional mode name-function highlight-regexp))
-  (noflet ((display-buffer (buffer-or-name &optional action frame))
-           (set-window-point (window pos))
-           (goto-char (position)))
-    (fset 'display-buffer 'ignore)
-    (fset 'goto-char 'ignore)
-    (fset 'set-window-point 'ignore)
-    (save-window-excursion
-      ad-do-it)))
+  (defadvice compilation-start
+      (around inhibit-display
+              (command &optional mode name-function highlight-regexp))
+    (noflet ((display-buffer (buffer-or-name &optional action frame))
+             (set-window-point (window pos))
+             (goto-char (position)))
+	    (fset 'display-buffer 'ignore)
+	    (fset 'goto-char 'ignore)
+	    (fset 'set-window-point 'ignore)
+	    (save-window-excursion
+	      ad-do-it)))
 
-(ad-activate 'compilation-start)
+  (ad-activate 'compilation-start))
+
+
+
+;; Hooks
+(add-hook 'after-init-hook 'ffort-sync-packages-trigger 0)
+(add-hook 'after-init-hook 'ffort-theme-configure-theme 10)
+(add-hook 'after-init-hook 'setup-merlin 20)
+(add-hook 'after-init-hook 'setup-ccls 20)
+(add-hook 'after-init-hook 'setup-lsp-ltex 20)
+(add-hook 'after-init-hook 'setup-compilation-advice 20)
+
 
 ;; Custom variables
 
