@@ -122,7 +122,7 @@
 
 (defun ffort-sync-trigger ()
   (require 'time-date)
-  (when (> (time-to-number-of-days (time-since (ffort-sync-read-last))) 1)
+  (when (/= (time-to-day-in-year (current-time)) (time-to-day-in-year (ffort-sync-read-last)))
     (ffort-sync)
     (ffort-sync-write-last)
     ))
