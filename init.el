@@ -330,7 +330,20 @@
 
   (ad-activate 'compilation-start))
 
+;; Windows specific
+(when (or (eql system-type 'windows-nt))
+  ;; Default to Unix file endings
+  (setq-default buffer-file-coding-system 'utf-8-unix)
+  (setq-default default-buffer-file-coding-system 'utf-8-unix)
+  (set-default-coding-systems 'utf-8-unix)
+  (prefer-coding-system 'utf-8-unix)
 
+  ;; Font
+  (w32-find-non-USB-fonts)
+  (add-to-list 'default-frame-alist
+             '(font . "Consolas-11"))
+
+  )
 
 ;; Hooks
 (add-hook 'after-init-hook 'ffort-sync-trigger 0)
