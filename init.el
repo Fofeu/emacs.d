@@ -461,6 +461,7 @@
  '(make-backup-files nil)
  '(mouse-autoselect-window t)
  '(next-line-add-newlines nil)
+ '(org-adapt-indentation t)
  '(org-export-show-temporary-export-buffer nil)
  '(org-format-latex-options
    '(:foreground default :background default :scale 1.3 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
