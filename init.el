@@ -330,7 +330,20 @@
 
   (ad-activate 'compilation-start))
 
+;; Windows specific
+(when (or (eql system-type 'windows-nt))
+  ;; Default to Unix file endings
+  (setq-default buffer-file-coding-system 'utf-8-unix)
+  (setq-default default-buffer-file-coding-system 'utf-8-unix)
+  (set-default-coding-systems 'utf-8-unix)
+  (prefer-coding-system 'utf-8-unix)
 
+  ;; Font
+  (w32-find-non-USB-fonts)
+  (add-to-list 'default-frame-alist
+             '(font . "Consolas-11"))
+
+  )
 
 ;; Hooks
 (add-hook 'after-init-hook 'ffort-sync-trigger 0)
@@ -448,6 +461,7 @@
  '(make-backup-files nil)
  '(mouse-autoselect-window t)
  '(next-line-add-newlines nil)
+ '(org-adapt-indentation t)
  '(org-export-show-temporary-export-buffer nil)
  '(org-format-latex-options
    '(:foreground default :background default :scale 1.3 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
