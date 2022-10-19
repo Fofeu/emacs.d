@@ -316,22 +316,22 @@
   (when (file-directory-p haskell-bin-path)
     (add-to-list 'exec-path haskell-bin-path)))
 
-(defun setup-compilation-advice ()
-  (require 'noflet)
+;; (defun setup-compilation-advice ()
+;;   (require 'noflet)
 
-  (defadvice compilation-start
-      (around inhibit-display
-              (command &optional mode name-function highlight-regexp))
-    (noflet ((display-buffer (buffer-or-name &optional action frame))
-             (set-window-point (window pos))
-             (goto-char (position)))
-	    (fset 'display-buffer 'ignore)
-	    (fset 'goto-char 'ignore)
-	    (fset 'set-window-point 'ignore)
-	    (save-window-excursion
-	      ad-do-it)))
+;;   (defadvice compilation-start
+;;       (around inhibit-display
+;;               (command &optional mode name-function highlight-regexp))
+;;     (noflet ((display-buffer (buffer-or-name &optional action frame))
+;;              (set-window-point (window pos))
+;;              (goto-char (position)))
+;; 	    (fset 'display-buffer 'ignore)
+;; 	    (fset 'goto-char 'ignore)
+;; 	    (fset 'set-window-point 'ignore)
+;; 	    (save-window-excursion
+;; 	      ad-do-it)))
 
-  (ad-activate 'compilation-start))
+;;   (ad-activate 'compilation-start))
 
 ;; Windows specific
 (when (or (eq system-type 'windows-nt) (eq system-type 'cygwin))
@@ -355,7 +355,7 @@
 (add-hook 'after-init-hook 'setup-merlin 20)
 (add-hook 'after-init-hook 'setup-ccls 20)
 (add-hook 'after-init-hook 'setup-lsp-ltex 20)
-(add-hook 'after-init-hook 'setup-compilation-advice 20)
+;; (add-hook 'after-init-hook 'setup-compilation-advice 20)
 
 
 ;; Custom variables
@@ -478,7 +478,7 @@
  '(org-preview-latex-image-directory "/tmp/ltximg/")
  '(org-support-shift-select 'always)
  '(package-selected-packages
-   '(gnu-elpa-keyring-update proof-general github-tags lsp-ltex noflet gnuplot-mode cuda-mode merlin-company bison-mode auto-virtualenv undo-tree z3-mode cmake-mode cargo lsp-ui ccls yasnippet buttons graphviz-dot-mode tangotango-theme presentation csv-mode json-mode unfill merlin ocp-indent buffer-move auctex edit-server-htmlize edit-server tuareg projectile fold-this company yaml-mode smart-tab lua-mode browse-kill-ring))
+   '(gnu-elpa-keyring-update proof-general github-tags lsp-ltex gnuplot-mode cuda-mode merlin-company bison-mode auto-virtualenv undo-tree z3-mode cmake-mode cargo lsp-ui ccls yasnippet buttons graphviz-dot-mode tangotango-theme presentation csv-mode json-mode unfill merlin ocp-indent buffer-move auctex edit-server-htmlize edit-server tuareg projectile fold-this company yaml-mode smart-tab lua-mode browse-kill-ring))
  '(python-indent-offset 2)
  '(safe-local-variable-values
    '((TeX-command-extra-options . "-shell-escape")
