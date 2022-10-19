@@ -474,7 +474,7 @@
  '(org-preview-latex-image-directory "/tmp/ltximg/")
  '(org-support-shift-select 'always)
  '(package-selected-packages
-   '(github-tags lsp-ltex noflet gnuplot-mode cuda-mode merlin-company bison-mode auto-virtualenv undo-tree z3-mode cmake-mode cargo lsp-ui ccls yasnippet buttons graphviz-dot-mode tangotango-theme presentation csv-mode json-mode unfill merlin ocp-indent buffer-move auctex edit-server-htmlize edit-server tuareg projectile fold-this company yaml-mode smart-tab lua-mode browse-kill-ring))
+   '(gnu-elpa-keyring-update proof-general github-tags lsp-ltex noflet gnuplot-mode cuda-mode merlin-company bison-mode auto-virtualenv undo-tree z3-mode cmake-mode cargo lsp-ui ccls yasnippet buttons graphviz-dot-mode tangotango-theme presentation csv-mode json-mode unfill merlin ocp-indent buffer-move auctex edit-server-htmlize edit-server tuareg projectile fold-this company yaml-mode smart-tab lua-mode browse-kill-ring))
  '(python-indent-offset 2)
  '(safe-local-variable-values
    '((TeX-command-extra-options . "-shell-escape")
