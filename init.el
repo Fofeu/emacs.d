@@ -448,6 +448,7 @@
  '(ccls-executable "/usr/bin/ccls")
  '(column-number-mode t)
  '(company-minimum-prefix-length 1)
+ '(coq-compile-before-require t)
  '(delete-selection-mode t)
  '(ffort-last-sync "last-sync")
  '(global-auto-revert-mode t)
