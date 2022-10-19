@@ -75,7 +75,6 @@
     (other-window 2)))
 
 ;; Sync packages
-(require 'f)
 (defcustom ffort-sync-last-filename
   "last-sync"
   "Path to the file storing the date of the last sync"
@@ -85,12 +84,14 @@
   (expand-file-name (concat "./" ffort-sync-last-filename) user-emacs-directory))
 
 (defun ffort-sync-write-last ()
-  (f-write-text (format "%s" (current-time)) 'utf-8 (ffort-sync-last-path)))
+  (condition-case nil
+      (f-write-text (format "%s" (current-time)) 'utf-8 (ffort-sync-last-path))
+    (error nil)))
 
 (defun ffort-sync-read-last ()
   (condition-case nil
       (time-convert (read (f-read-text (ffort-sync-last-path))))
-      (error '(0 0))))
+    (error '(0 0))))
 
 (defun ffort-sync ()
   (interactive)
@@ -121,11 +122,13 @@
       )))
 
 (defun ffort-sync-trigger ()
+  ;; If loading 'f fails, we just don't read/write to/from file
+  (require 'f nil t)
   (require 'time-date)
   (when (/= (time-to-day-in-year (current-time)) (time-to-day-in-year (ffort-sync-read-last)))
     (ffort-sync)
-    (ffort-sync-write-last)
-    ))
+    (ffort-sync-write-last))
+  )
 
 (defun exit-emacs-sensibly ()
   (interactive)
@@ -331,7 +334,7 @@
   (ad-activate 'compilation-start))
 
 ;; Windows specific
-(when (or (eql system-type 'windows-nt))
+(when (or (eq system-type 'windows-nt) (eq system-type 'cygwin))
   ;; Default to Unix file endings
   (setq-default buffer-file-coding-system 'utf-8-unix)
   (setq-default default-buffer-file-coding-system 'utf-8-unix)
@@ -339,9 +342,10 @@
   (prefer-coding-system 'utf-8-unix)
 
   ;; Font
-  (w32-find-non-USB-fonts)
+  (when (eq system-type 'windows-nt)
+    (w32-find-non-USB-fonts))
   (add-to-list 'default-frame-alist
-             '(font . "Consolas-11"))
+               '(font . "Consolas-11"))
 
   )
 
