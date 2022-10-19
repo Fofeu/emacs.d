@@ -434,7 +434,7 @@
      ("Clean All" "(TeX-clean t)" TeX-run-function nil t :help "Delete generated intermediate and output files")
      ("Other" "" TeX-run-command t t :help "Run an arbitrary command")))
  '(TeX-master nil)
- '(auto-save-default nil)
+ '(auto-save-default t)
  '(before-save-hook '(delete-trailing-whitespace))
  '(c-basic-offset 2)
  '(c-default-style
