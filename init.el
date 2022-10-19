@@ -436,6 +436,8 @@
  '(TeX-master nil)
  '(auto-save-default t)
  '(before-save-hook '(delete-trailing-whitespace))
+ '(bibtex-align-at-equal-sign t)
+ '(bibtex-text-indentation 12)
  '(c-basic-offset 2)
  '(c-default-style
    '((c-mode . "bsd")
