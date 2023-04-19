@@ -1,3 +1,4 @@
+
 ;;; -*- lexical-binding: t -*-
 ;; Configure MELPA
 (require 'package)
@@ -344,7 +345,7 @@
   (prefer-coding-system 'utf-8-unix)
 
   ;; Font
-  (when (eq system-type 'windows-nt)
+  (when (and (eq system-type 'windows-nt) (window-system))
     (w32-find-non-USB-fonts))
   (add-to-list 'default-frame-alist
                '(font . "Consolas-11"))
