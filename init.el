@@ -211,11 +211,13 @@
       (add-hook 'merlin-mode-hook 'set-merlin-keys t))))
 
 ;; C/C++
-;;(add-hook 'c++-mode-hook 'company-mode)
-(defun setup-ccls () (require 'ccls))
-;;(add-hook 'c-mode-hook 'company-mode)
+(add-hook 'c++-mode-hook 'lsp)
+(add-hook 'c-mode-hook 'lsp)
 ;;(add-hook 'c-mode-hook 'hide-ifdef-mode)
 ;;(add-hook 'hide-ifdef-mode-hook 'hide-ifdefs)
+
+;; Rust
+(add-hook 'rust-mode-hook 'lsp)
 
 ;; Python
 (add-hook 'python-mode-hook
@@ -353,7 +355,6 @@
 (add-hook 'after-init-hook 'ffort-sync-trigger 0)
 (add-hook 'after-init-hook 'ffort-theme-configure-theme 10)
 (add-hook 'after-init-hook 'setup-merlin 20)
-(add-hook 'after-init-hook 'setup-ccls 20)
 (add-hook 'after-init-hook 'setup-lsp-ltex 20)
 ;; (add-hook 'after-init-hook 'setup-compilation-advice 20)
 
@@ -464,6 +465,7 @@
  '(initial-scratch-message "")
  '(lsp-keymap-prefix "C-c l")
  '(lsp-ltex-version "15.2.0-linux-x64")
+ '(lsp-rust-server 'rust-analyzer)
  '(lua-indent-level 2)
  '(make-backup-files nil)
  '(mouse-autoselect-window t)
@@ -478,7 +480,7 @@
  '(org-preview-latex-image-directory "/tmp/ltximg/")
  '(org-support-shift-select 'always)
  '(package-selected-packages
-   '(gnu-elpa-keyring-update proof-general github-tags lsp-ltex gnuplot-mode cuda-mode merlin-company bison-mode auto-virtualenv undo-tree z3-mode cmake-mode cargo lsp-ui ccls yasnippet buttons graphviz-dot-mode tangotango-theme presentation csv-mode json-mode unfill merlin ocp-indent buffer-move auctex edit-server-htmlize edit-server tuareg projectile fold-this company yaml-mode smart-tab lua-mode browse-kill-ring))
+   '(rust-mode gnu-elpa-keyring-update proof-general github-tags lsp-ltex gnuplot-mode cuda-mode merlin-company bison-mode auto-virtualenv undo-tree z3-mode cmake-mode cargo lsp-ui ccls yasnippet buttons graphviz-dot-mode tangotango-theme presentation csv-mode json-mode unfill merlin ocp-indent buffer-move auctex edit-server-htmlize edit-server tuareg projectile fold-this company yaml-mode smart-tab lua-mode browse-kill-ring))
  '(python-indent-offset 2)
  '(safe-local-variable-values
    '((TeX-command-extra-options . "-shell-escape")
